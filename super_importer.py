@@ -15,6 +15,14 @@ class PipFinder(MetaPathFinder):
 
         return util.find_spec(self)
 
+    
+    
+def listify(x):
+    return [x]
+
+
+def draw_histogram(data):
+    plt.hist(data)
 
 if __name__ == "__main__":
     sys.meta_path.append(PipFinder)
