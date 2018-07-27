@@ -27,3 +27,5 @@ def draw_histogram(data):
 
 if __name__ == "__main__":
     sys.meta_path.append(PipFinder)
+
+import numba as nb
