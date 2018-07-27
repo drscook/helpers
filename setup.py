@@ -42,12 +42,14 @@ import numba as nb
 # Commonly used modules
 ############################################################################################################# 
 def install_conda():
+    print("Chicken ...")
     os.system('conda update conda')
     os.system('conda install -c numba cudatoolkit')
 #    os.system('conda install -c numba numba')
 
 
 def install_pip():
+    print("... dance!")
     os.system('apt-get update')
     os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
 #    os.system('pip install --upgrade numba')
