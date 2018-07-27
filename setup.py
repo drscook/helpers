@@ -41,6 +41,21 @@ import numba as nb
 ############################################################################################################# 
 # Commonly used modules
 ############################################################################################################# 
+def install_conda():
+    os.system('conda update conda')
+    os.system('conda install -c numba cudatoolkit')
+#    os.system('conda install -c numba numba')
+
+
+def install_pip():
+    os.system('apt-get update')
+    os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
+#    os.system('pip install --upgrade numba')
+    os.system('apt-get update')
+    os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
+    os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
+
+    
 def test_numba_cuda():
     os.system('pip install --upgrade numba')
     
@@ -57,55 +72,40 @@ def test_numba_cuda():
                 A[tx] = 2*A[tx]
             double_gpu[1,3](A_gpu)
         except cuda.CudaSupportError:
-#             print("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
-#             raise SystemExit()
-            raise Exception("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
+            print("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
+            raise SystemExit()
+#             raise Exception("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
         except cuda.cudadrv.nvvm.NvvmSupportError:
             print('caught cuda.NvvmSupportError')
             return False
         
 
         A *= 2
-        return np.allclose(A, A_gpu.copy_to_host())        
+        if np.allclose(A, A_gpu.copy_to_host()):
+            return "Cuda.jit is installed and working!"
 
-    result = test()
-    if result:
-        print("Cuda.jit is installed and working!")        
-    else:
-        print("Cuda.jit not working yet.  Trying to conda install.")
+    # Loop over installation options
+    is_working = test()
+    installs = [install_conda, install_pip]
+    while not is_working:
+        if not installs:
+            break
+            
+        install_func = installs.pop()
+        print(f"Cuda.jit not working yet.  Trying to {install_func.__name__.replace("_", " ")}"
         try:
-            os.system('conda update conda')
-            os.system('conda install -c numba cudatoolkit')
-#             os.system('conda install -c numba numba')
+            install_func()
         except:
             pass
         else:
-            result = test()
+            is_working = test()
 
-        if result:
-            print("That worked!! Cuda.jit is installed and working!")
-        else:
-            print("That failed.  Cuda.jit not working yet.  Trying to pip install.")
-            try:
-                os.system('apt-get update')
-                os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
-#                 os.system('pip install --upgrade numba')
-                os.system('apt-get update')
-                os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
-                os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
-            except:
-                pass
-            else:
-                result = test()
-                
-            if result:
-                print("That worked!! Cuda.jit is installed and working!")
-            else:
-                print("That failed too.  I give up.  Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
-    return result
+    if is_working:
+        print(is_working)
+    else:  
+        print("That failed too.  I give up.  Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
 
-
-
+              
 
 ############################################################################################################# 
 # Preferences
