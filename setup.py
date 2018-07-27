@@ -74,7 +74,7 @@ def test_numba_cuda():
 #         except nb.NvvmSupportError:
 #             print('caught nb.NvvmSupportError')
 #             return False
-        except cudadrv.NvvmSupportError:
+        except cuda.cudadrv.nvvm.NvvmSupportError:
             print('caught cuda.NvvmSupportError')
             return False
         
