@@ -71,7 +71,7 @@ def test_numba_cuda():
                 tx = cuda.threadIdx.x
                 A[tx] = 2*A[tx]
             double_gpu[1,3](A_gpu)
-        except cuda.CudaSupportError:
+        except StopIteration:  #cuda.CudaSupportError:
             return False, "Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU"
         except cuda.cudadrv.nvvm.NvvmSupportError:
             return False, None
