@@ -11,7 +11,7 @@ import sys
 class PipFinder(MetaPathFinder):
     
     def find_spec(self, fullname, path, target=None):
-        print(f"Module {self} not installed.  Attempting to pip install")
+#         print(f"Module {self} not installed.  Attempting to pip install")
         cmd = f"{sys.executable} -m pip install {self}"
         try:
             subprocess.run(cmd.split(), check=True)
