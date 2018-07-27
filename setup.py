@@ -17,8 +17,8 @@ class PipFinder(MetaPathFinder):
         return util.find_spec(self)
 
 
-if __name__ == "__main__":
-    sys.meta_path.append(PipFinder)
+# if __name__ == "__main__":
+sys.meta_path.append(PipFinder)
 
 ############################################################################################################# 
 # Standard modules
