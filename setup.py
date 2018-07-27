@@ -72,18 +72,18 @@ def test_numba_cuda():
                 A[tx] = 2*A[tx]
             double_gpu[1,3](A_gpu)
         except cuda.CudaSupportError:
-            print("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
-            raise SystemExit()
+            return "Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU"
+#            raise SystemExit()
 #             raise Exception("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
         except cuda.cudadrv.nvvm.NvvmSupportError:
-            print('caught cuda.NvvmSupportError')
+#            print('caught cuda.NvvmSupportError')
             return False
-        
-
         A *= 2
         if np.allclose(A, A_gpu.copy_to_host()):
             return "Cuda.jit is installed and working!"
-
+        else:
+            return False
+        
     # Loop over installation options
     is_working = test()
     installs = [install_conda, install_pip]
@@ -105,7 +105,7 @@ def test_numba_cuda():
     else:  
         print("That failed too.  I give up.  Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
 
-    return bool(is_working)
+    return isinstance(bool, is_working) and is_working
               
               
 
