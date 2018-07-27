@@ -47,12 +47,15 @@ def test_numba_cuda():
         import numba as nb
         import numba.cuda as cuda
         A = np.arange(3)
-        A_gpu = cuda.to_device(A)
-        @cuda.jit
-        def double_gpu(A):
-            tx = cuda.threadIdx.x
-            A[tx] = 2*A[tx]
-        double_gpu[1,3](A_gpu)
+        try:
+            A_gpu = cuda.to_device(A)
+            @cuda.jit
+            def double_gpu(A):
+                tx = cuda.threadIdx.x
+                A[tx] = 2*A[tx]
+            double_gpu[1,3](A_gpu)
+        except cuda.CudaSupportError:
+            return False
         A *= 2
         return np.allclose(A, A_gpu.copy_to_host())        
 
