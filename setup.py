@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 class PipFinder(MetaPathFinder):
+    
     def find_spec(self, fullname, path, target=None):
         print(f"Module {self} not installed.  Attempting to pip install")
         cmd = f"{sys.executable} -m pip install {self}"
@@ -14,11 +15,12 @@ class PipFinder(MetaPathFinder):
             subprocess.run(cmd.split(), check=True)
         except subprocess.CalledProcessError:
             return None
+        
         return util.find_spec(self)
 
 
-# if __name__ == "__main__":
-sys.meta_path.append(PipFinder)
+if __name__ == "__main__":
+    sys.meta_path.append(PipFinder)
 
 ############################################################################################################# 
 # Standard modules
