@@ -92,7 +92,7 @@ def test_numba_cuda():
             break
             
         install_func = installs.pop()
-        print(f"Cuda.jit not working yet.  Trying to {install_func.__name__.replace("_", " ")}"
+        print(f"Cuda.jit not working yet.  Trying to {install_func.__name__.replace('_', ' ')}"
         try:
             install_func()
         except:
