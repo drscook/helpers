@@ -59,7 +59,7 @@ def test_numba_cuda():
         except cuda.CudaSupportError:
             print("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
             raise SystemExit()
-        except cuda.NvvmSupportError:
+        except OSError:
             return False
         A *= 2
         return np.allclose(A, A_gpu.copy_to_host())        
