@@ -39,53 +39,53 @@ import numba as nb
 # Commonly used modules
 ############################################################################################################# 
 def import_numba_cuda():
+    os.system('pip install --upgrade numba')
+    
     def test():
         print("\n")
-        result = False
-        try:
-            import numba as nb
-            import numba.cuda as cuda
-            A = np.arange(3)
-            A_gpu = cuda.to_device(A)
-#             A = nb.SmartArray(np.arange(3))
-            @cuda.jit
-            def double_gpu(A):
-                tx = cuda.threadIdx.x
-                A[tx] = 2*A[tx]
-            double_gpu[1,3](A_gpu)
-            A *= 2
-            result = np.allclose(A, A_gpu.copy_to_host())
-        except:
-            pass
-        return result
+        import numba as nb
+        import numba.cuda as cuda
+        A = np.arange(3)
+        A_gpu = cuda.to_device(A)
+        @cuda.jit
+        def double_gpu(A):
+            tx = cuda.threadIdx.x
+            A[tx] = 2*A[tx]
+        double_gpu[1,3](A_gpu)
+        A *= 2
+        return np.allclose(A, A_gpu.copy_to_host())        
 
     result = test()
-    if result == True:
+    if result:
         print("Cuda.jit is installed and working!")        
     else:
         print("Cuda.jit not working yet.  Trying to conda install.")
         try:
             os.system('conda update conda')
             os.system('conda install -c numba cudatoolkit')
-            os.system('conda install -c numba numba')
-            result = test()
+#             os.system('conda install -c numba numba')
         except:
             pass
-        if result == True:
+        else:
+            result = test()
+
+        if result:
             print("That worked!! Cuda.jit is installed and working!")
         else:
             print("That failed.  Cuda.jit not working yet.  Trying to pip install.")
             try:
                 os.system('apt-get update')
                 os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
-                os.system('pip install --upgrade numba')
+#                 os.system('pip install --upgrade numba')
                 os.system('apt-get update')
                 os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
                 os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
-                result = test()
             except:
                 pass
-            if result == True:
+            else:
+                result = test()
+                
+            if result:
                 print("That worked!! Cuda.jit is installed and working!")
             else:
                 print("That failed too.  I give up.")
