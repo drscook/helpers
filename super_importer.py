@@ -16,7 +16,12 @@ class PipFinder(MetaPathFinder):
 
         return util.find_spec(self)
 
-    
+
+if __name__ == "__main__":
+    sys.meta_path.append(PipFinder)
+
+
+import numba as nb
     
 def listify(x):
     return [x]
@@ -25,7 +30,5 @@ def listify(x):
 def draw_histogram(data):
     plt.hist(data)
 
-if __name__ == "__main__":
-    sys.meta_path.append(PipFinder)
 
-import numba as nb
+
