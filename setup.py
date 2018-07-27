@@ -57,6 +57,9 @@ def test_numba_cuda():
                 A[tx] = 2*A[tx]
             double_gpu[1,3](A_gpu)
         except cuda.CudaSupportError:
+            print("Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
+            raise SystemExit()
+        except cuda.NvvmSupportError:
             return False
         A *= 2
         return np.allclose(A, A_gpu.copy_to_host())        
