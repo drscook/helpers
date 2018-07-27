@@ -105,7 +105,7 @@ def test_numba_cuda():
     else:  
         print("That failed too.  I give up.  Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU")
 
-    return isinstance(bool, is_working) and is_working
+    return isinstance(is_working, bool) and is_working
               
               
 
