@@ -92,7 +92,8 @@ def test_numba_cuda():
             if result:
                 print("That worked!! Cuda.jit is installed and working!")
             else:
-                print("That failed too.  I give up.")
+                print("That failed too.  I give up.  Are you sure you have a GPU?  If using Colab, 
+                      Runtime->Change Runtime Type->Hardware accelerator = GPU")
     return result
 
 
