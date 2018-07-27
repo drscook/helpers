@@ -42,17 +42,13 @@ import numba as nb
 # Commonly used modules
 ############################################################################################################# 
 def install_conda():
-    print("Chicken ...")
     os.system('conda update conda')
     os.system('conda install -c numba cudatoolkit')
-#    os.system('conda install -c numba numba')
 
 
 def install_pip():
-    print("... dance!")
     os.system('apt-get update')
     os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
-#    os.system('pip install --upgrade numba')
     os.system('apt-get update')
     os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
     os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
@@ -74,12 +70,12 @@ def test_numba_cuda():
                 A[tx] = 2*A[tx]
             double_gpu[1,3](A_gpu)
         except cuda.CudaSupportError:
-            return False, None  # Add message to stop early
+            return False, "Are you sure you have a GPU?  If using Colab, Runtime->Change Runtime Type->Hardware accelerator = GPU"  # Add message to stop early
         except cuda.cudadrv.nvvm.NvvmSupportError:
             return False, None
         A *= 2
         if np.allclose(A, A_gpu.copy_to_host()):
-            return True, "\n\nCuda.jit IS INSTALLED AND WORKINNG!!  IGNORE ANY MESSAGES ABOVE THAT SAY DIFFERENTLY!!\n"
+            return True, "\nCuda.jit IS INSTALLED AND WORKINNG!!  IGNORE ANY MESSAGES ABOVE THAT SAY DIFFERENTLY!!\n"
         else:
             return False, None
         
