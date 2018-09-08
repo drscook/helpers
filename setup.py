@@ -79,7 +79,7 @@ def setup_numba_cuda():
         os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
 
     # Loop over installation options
-    is_working, message = test_cuda()
+    is_working, message = test_numba_cuda()
     installs = [install_conda, install_pip]
     while not is_working:
         if message or not installs:
