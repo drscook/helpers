@@ -43,7 +43,7 @@ import numba as nb
 ############################################################################################################# 
    
 def setup_numba_cuda():
-    def test_cuda():
+    def test_numba_cuda():
         print("\n")
         import numba as nb
         import numba.cuda as cuda
@@ -92,7 +92,7 @@ def setup_numba_cuda():
         except:
             pass
         else:
-            is_working, message = ()
+            is_working, message = test_numba_cuda()
 
     if message:
         print(message)
