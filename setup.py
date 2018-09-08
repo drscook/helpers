@@ -41,23 +41,9 @@ import numba as nb
 ############################################################################################################# 
 # Commonly used modules
 ############################################################################################################# 
-def install_conda():
-    os.system('conda update conda')
-    os.system('conda install -c numba numba')
-    os.system('conda install -c numba cudatoolkit')
-
-
-def install_pip():
-    os.system('apt-get update')
-    os.system('pip install --upgrade numba')
-    os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
-    os.system('apt-get update')
-    os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
-    os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
-
-    
-def test_numba_cuda():
-    def test():
+   
+def setup_numba_cuda():
+    def test_cuda():
         print("\n")
         import numba as nb
         import numba.cuda as cuda
@@ -78,9 +64,22 @@ def test_numba_cuda():
             return True, "\nCuda.jit IS INSTALLED AND WORKINNG!!  IGNORE ANY MESSAGES ABOVE THAT SAY DIFFERENTLY!!\n"
         else:
             return False, None
-        
+
+    def install_conda():
+        os.system('conda update conda')
+        os.system('conda install -c numba numba')
+        os.system('conda install -c numba cudatoolkit')
+
+    def install_pip():
+        os.system('apt-get update')
+        os.system('pip install --upgrade numba')
+        os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
+        os.system('apt-get update')
+        os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
+        os.environ['NUMBAPRO_NVVM'] = "/usr/lib/x86_64-linux-gnu/libnvvm.so"
+
     # Loop over installation options
-    is_working, message = test()
+    is_working, message = test_cuda()
     installs = [install_conda, install_pip]
     while not is_working:
         if message or not installs:
@@ -93,7 +92,7 @@ def test_numba_cuda():
         except:
             pass
         else:
-            is_working, message = test()
+            is_working, message = ()
 
     if message:
         print(message)
