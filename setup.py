@@ -43,11 +43,13 @@ import numba as nb
 ############################################################################################################# 
 def install_conda():
     os.system('conda update conda')
+    os.system('conda install -c numba numba')
     os.system('conda install -c numba cudatoolkit')
 
 
 def install_pip():
     os.system('apt-get update')
+    os.system('pip install --upgrade numba')
     os.system('apt install -y --no-install-recommends -q nvidia-cuda-toolkit')
     os.system('apt-get update')
     os.environ['NUMBAPRO_LIBDEVICE'] = "/usr/lib/nvidia-cuda-toolkit/libdevice"
@@ -55,8 +57,6 @@ def install_pip():
 
     
 def test_numba_cuda():
-    os.system('pip install --upgrade numba')
-    
     def test():
         print("\n")
         import numba as nb
