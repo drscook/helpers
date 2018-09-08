@@ -1,4 +1,4 @@
-print('thanks Geir Arne')
+print('thanks Geir Arne 9/8/18')
 
 ############################################################################################################# 
 # Super-Importer created by Geir Arne Hjelle.  Will attempt to pip install module if not found by normal import.
