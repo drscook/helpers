@@ -27,12 +27,3 @@ def prep(df, fix_names=True):
     if fix_names:
         df.columns = [c.strip().lower() for c in df.columns]
     return df.apply(to_numeric).convert_dtypes().set_index(df.columns[:idx].tolist())
-
-def run_query(qry):
-    res = client.query(qry).result()
-    if res.total_rows > 0:
-        res = prep(res.to_dataframe())
-        if 'geometry' in res.columns:
-            geo = gpd.GeoSeries.from_wkt(res['geometry'], crs=CRS['bigquery'])
-            res = gpd.GeoDataFrame(res, geometry=geo)
-    return res
