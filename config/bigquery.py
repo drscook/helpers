@@ -1,4 +1,4 @@
-import .utils as utils
+from . import utils
 from google.colab import auth
 from google.cloud.bigquery import Client
 
