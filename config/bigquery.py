@@ -1,4 +1,5 @@
 from . import utils
+import .utils
 from google.colab import auth
 from google.cloud.bigquery import Client
 auth.authenticate_user()
