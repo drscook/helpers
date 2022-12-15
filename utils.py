@@ -45,6 +45,23 @@ def listify(X):
         except:
             return [X]
 
+def join(parts, sep=', '):
+    """ join list into single string """
+    return sep.join([str(p) for p in listify(parts)])
+
+def subquery(qry, indents=1):
+    """indent query for inclusion as subquery"""
+    s = '\n' + indents * '    '
+    return qry.strip(';\n ').replace('\n', s)  # strip leading/trailing whitespace and indent all but first line
+
+def make_select(cols, indents=1, sep=',\n', tbl=None):
+    """ useful for select statements """
+    cols = listify(cols)
+    if tbl is not None:
+        cols = [f'{tbl}.{x}' for x in cols]
+    qry = join(cols, sep)
+    return subquery(qry, indents)
+
 def to_numeric(ser):
     """converts columns to small numeric dtypes when possible"""
     dt = str(ser.dtype)
@@ -62,21 +79,25 @@ def prep(df, fix_names=True):
     return df.apply(to_numeric).convert_dtypes().set_index(df.columns[:idx].tolist())
 
 
+
+
+
+
 class BQ():
-  def __init__(self, project_id):
-    from google.colab import auth
-    from google.cloud.bigquery import Client
-    auth.authenticate_user()
-    self.client = Client(project=project_id)
+    def __init__(self, project_id):
+        from google.colab import auth
+        from google.cloud.bigquery import Client
+        auth.authenticate_user()
+        self.client = Client(project=project_id)
   
-  def run_query(self, qry):
-      res = self.client.query(qry).result()
-      if res.total_rows > 0:
+    def run_query(self, qry):
+        res = self.client.query(qry).result()
+        if res.total_rows > 0:
           res = prep(res.to_dataframe())
           if 'geometry' in res.columns:
               geo = gpd.GeoSeries.from_wkt(res['geometry'], crs=CRS['bigquery'])
               res = gpd.GeoDataFrame(res, geometry=geo)
-      return res
+        return res
 
     def delete_table(self, tbl):
         self.clien.delete_table(tbl, not_found_ok=True)
@@ -89,5 +110,17 @@ class BQ():
         self.client.create_dataset(targ)
         for t in self.client.list_tables(curr):
             self.client.copy_table(t, f'{targ}.{t.table_id}')
+
+    def check_table(self, tbl, overwrite=False):
+        if overwrite:
+            self.delete_table(tbl)
+        try:
+            return self.client.get_table(tbl)
+        except:
+            return False
+
+    def get_columns(self, tbl):
+        if self.check_table(tbl):
+            return [s.name for s in client.get_table(tbl).schema]
 
 
