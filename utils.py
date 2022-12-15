@@ -112,7 +112,9 @@ class BQ():
             targ = curr + '2'
         self.client.copy_table(curr, targ)
 
-    def copy_ds(self, curr, targ):
+    def copy_ds(self, curr, targ=None):
+        if targ is None or targ == curr:
+            targ = curr + '2'
         self.del_ds(targ)
         self.client.create_dataset(targ)
         for t in self.client.list_tables(curr):
