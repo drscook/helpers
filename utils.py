@@ -1,4 +1,10 @@
 from . import *
+CRS = {
+    'census'  : 'EPSG:4269'  , # degrees - used by Census
+    'bigquery': 'EPSG:4326'  , # WSG84 - used by Bigquery
+    'area'    : 'ESRI:102003', # meters
+    'length'  : 'ESRI:102005', # meters
+}
 
 @dataclasses.dataclass
 class Github():
@@ -81,6 +87,12 @@ def prep(df, fix_names=True):
         df.columns = [c.strip().lower() for c in df.columns]
     return df.apply(to_numeric).convert_dtypes().set_index(df.columns[:idx].tolist())
 
+def transform_labeled(trans, df):
+    """apply scikit-learn tranformation and return dataframe with appropriate column names and index"""
+    return prep(pd.DataFrame(trans.fit_transform(df), columns=trans.get_feature_names_out(), index=df.index))
+
+def decade(year):
+    return int(year) // 10 * 10
 
 class BQ():
     def __init__(self, project_id):
@@ -89,40 +101,53 @@ class BQ():
         auth.authenticate_user()
         self.client = Client(project=project_id)
   
-    def run_query(self, qry):
-        res = self.client.query(qry).result()
+    def run_qry(self, qry):
+        return self.client.query(qry).result()
+
+    def qry_to_df(self, qry):
+        res = self.run_qry(qry)
         if res.total_rows > 0:
-          res = prep(res.to_dataframe())
-          if 'geometry' in res.columns:
-              geo = gpd.GeoSeries.from_wkt(res['geometry'], crs=CRS['bigquery'])
-              res = gpd.GeoDataFrame(res, geometry=geo)
-        return res
+          df = prep(res.to_dataframe())
+          if 'geometry' in df.columns:
+              geo = gpd.GeoSeries.from_wkt(df['geometry'], crs=CRS['bigquery'])
+              df = gpd.GeoDataFrame(df, geometry=geo)
+        return df
 
-    def delete_table(self, tbl):
-        self.clien.delete_table(tbl, not_found_ok=True)
+    def qry_to_tbl(self, qry, tbl, overwrite=False):
+        if not self.check_tbl(tbl, overwrite=overwrite):
+            qry = f"""
+create table {tbl} as (
+    {subquery(qry)}
+)"""
+            self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
+            self.run_qry(qry)
+        return tbl
 
-    def delete_dataset(self, dataset):
-        self.client.delete_dataset(dataset, not_found_ok=True)
 
-    def copy_dataset(self, curr, targ):
-        self.delete_dataset(targ)
+    def del_tbl(self, tbl):
+        self.client.delete_table(tbl, not_found_ok=True)
+
+    def del_ds(self, ds):
+        self.client.delete_dataset(ds, not_found_ok=True)
+
+    def copy_ds(self, curr, targ):
+        self.del_ds(targ)
         self.client.create_dataset(targ)
         for t in self.client.list_tables(curr):
             self.client.copy_table(t, f'{targ}.{t.table_id}')
 
-    def check_table(self, tbl, overwrite=False):
+    def get_tbl(self, tbl, overwrite=False):
         if overwrite:
-            self.delete_table(tbl)
+            self.del_tbl(tbl)
         try:
             return self.client.get_table(tbl)
         except:
             return False
 
-    def get_columns(self, tbl):
-        t = self.check_table(tbl) 
+    def get_cols(self, tbl):
+        t = self.get_tbl(tbl) 
         if t:
-            return [s.name.lower() for s in t.schema]
-        else:
-            return t
+            t = [s.name.lower() for s in t.schema]
+        return t
 
 
