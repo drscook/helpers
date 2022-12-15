@@ -1,3 +1,4 @@
+from logging import disable
 from . import *
 CRS = {
     'census'  : 'EPSG:4269'  , # degrees - used by Census
@@ -107,19 +108,6 @@ class BQ():
     def del_ds(self, ds):
         self.client.delete_dataset(ds, not_found_ok=True, delete_contents=True)
 
-    def copy_tbl(self, curr, targ=None):
-        if targ is None or targ == curr:
-            targ = curr + '2'
-        self.client.copy_table(curr, targ)
-
-    def copy_ds(self, curr, targ=None):
-        if targ is None or targ == curr:
-            targ = curr + '2'
-        self.del_ds(targ)
-        self.client.create_dataset(targ)
-        for t in self.client.list_tables(curr):
-            self.copy_tbl(curr=t, targ=f'{targ}.{t.table_id}')
-
     def get_tbl(self, tbl, overwrite=False):
         if overwrite:
             self.del_tbl(tbl)
@@ -128,11 +116,37 @@ class BQ():
         except:
             return False
 
+    def get_ds(self, ds, overwrite=False):
+        if overwrite:
+            self.del_ds(ds)
+        try:
+            return self.client.get_dataset(disable)
+        except:
+            return False
+
     def get_cols(self, tbl):
         t = self.get_tbl(tbl) 
         if t:
             t = [s.name.lower() for s in t.schema]
         return t
+
+    def copy_tbl(self, curr, targ=None, overwrite=False):
+        if targ is None or targ == curr:
+            targ = curr + '2'
+        if self.get_tbl(targ, overwrite):
+            print(f'{targ} exists - use overwrite=True to replace)
+        else:
+            self.client.copy_table(curr, targ)
+
+    def copy_ds(self, curr, targ=None, overwrite=False):
+        if targ is None or targ == curr:
+            targ = curr + '2'
+        if self.get_ds(targ, overwrite):
+            print(f'{targ} exists - use overwrite=True to replace)
+        else:
+            self.client.create_dataset(targ)
+            for t in self.client.list_tables(curr):
+                self.copy_tbl(curr=t, targ=f'{targ}.{t.table_id}')
 
     def run_qry(self, qry):
         return self.client.query(qry).result()
