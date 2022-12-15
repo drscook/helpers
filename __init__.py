@@ -18,3 +18,5 @@ for p in pkgs:
         print(pip)
         os.system(pip)
         exec(cmd)
+
+from . import utils as ut

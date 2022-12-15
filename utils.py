@@ -176,3 +176,11 @@ create table {tbl} as (
             self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
             self.client.load_table_from_dataframe(X, tbl).result()
         return tbl
+
+    def tbl_to_df(self, tbl, rows=10):
+        try:
+            assert rows > 0
+            qry = f'select * from {tbl} limit {rows}'
+        except:
+            qry = f'select * from {tbl}'
+        return self.qry_to_df(qry)
