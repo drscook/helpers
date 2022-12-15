@@ -9,8 +9,8 @@ class Github():
     base : str = '/content/'
 
     def __post_init__(self):
-        os.system(f'git config --global user.email {self.email}')
-        os.system(f'git config --global user.name {self.user}')
+        os.popen(f'git config --global user.email {self.email}')
+        os.popen(f'git config --global user.name {self.user}')
         self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
         self.path = self.base + self.repo
 
