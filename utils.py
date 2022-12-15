@@ -101,6 +101,37 @@ class BQ():
         auth.authenticate_user()
         self.client = Client(project=project_id)
   
+    def del_tbl(self, tbl):
+        self.client.delete_table(tbl, not_found_ok=True)
+
+    def del_ds(self, ds):
+        self.client.delete_dataset(ds, not_found_ok=True)
+
+    def copy_tbl(self, curr, targ=None):
+        if targ is None or targ == curr:
+            targ = curr + '2'
+        self.client.copy_table(curr, targ)
+
+    def copy_ds(self, curr, targ):
+        self.del_ds(targ)
+        self.client.create_dataset(targ)
+        for t in self.client.list_tables(curr):
+            self.copy_tbl(curr=t, targ=f'{targ}.{t.table_id}')
+
+    def get_tbl(self, tbl, overwrite=False):
+        if overwrite:
+            self.del_tbl(tbl)
+        try:
+            return self.client.get_table(tbl)
+        except:
+            return False
+
+    def get_cols(self, tbl):
+        t = self.get_tbl(tbl) 
+        if t:
+            t = [s.name.lower() for s in t.schema]
+        return t
+
     def run_qry(self, qry):
         return self.client.query(qry).result()
 
@@ -123,31 +154,9 @@ create table {tbl} as (
             self.run_qry(qry)
         return tbl
 
-
-    def del_tbl(self, tbl):
-        self.client.delete_table(tbl, not_found_ok=True)
-
-    def del_ds(self, ds):
-        self.client.delete_dataset(ds, not_found_ok=True)
-
-    def copy_ds(self, curr, targ):
-        self.del_ds(targ)
-        self.client.create_dataset(targ)
-        for t in self.client.list_tables(curr):
-            self.client.copy_table(t, f'{targ}.{t.table_id}')
-
-    def get_tbl(self, tbl, overwrite=False):
-        if overwrite:
-            self.del_tbl(tbl)
-        try:
-            return self.client.get_table(tbl)
-        except:
-            return False
-
-    def get_cols(self, tbl):
-        t = self.get_tbl(tbl) 
-        if t:
-            t = [s.name.lower() for s in t.schema]
-        return t
-
-
+    def df_to_tbl(self, df, tbl, overwrite=False):
+        if not self.get_tbl(tbl, overwrite=overwrite):
+            X = prep(df).reset_index().drop(columns=['index', 'level_0'], errors='ignore')
+            self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
+            self.client.load_table_from_dataframe(X, tbl).result()
+        return tbl
