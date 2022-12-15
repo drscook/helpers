@@ -105,7 +105,7 @@ class BQ():
         self.client.delete_table(tbl, not_found_ok=True)
 
     def del_ds(self, ds):
-        self.client.delete_dataset(ds, not_found_ok=True)
+        self.client.delete_dataset(ds, not_found_ok=True, delete_contents=True)
 
     def copy_tbl(self, curr, targ=None):
         if targ is None or targ == curr:
