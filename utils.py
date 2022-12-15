@@ -134,7 +134,7 @@ class BQ():
         if targ is None or targ == curr:
             targ = curr + '2'
         if self.get_tbl(targ, overwrite):
-            print(f'{targ} exists - use overwrite=True to replace)
+            print(f'{targ} exists - use overwrite=True to replace')
         else:
             self.client.copy_table(curr, targ)
 
@@ -142,7 +142,7 @@ class BQ():
         if targ is None or targ == curr:
             targ = curr + '2'
         if self.get_ds(targ, overwrite):
-            print(f'{targ} exists - use overwrite=True to replace)
+            print(f'{targ} exists - use overwrite=True to replace')
         else:
             self.client.create_dataset(targ)
             for t in self.client.list_tables(curr):
