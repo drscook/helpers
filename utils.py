@@ -1,4 +1,3 @@
-from logging import disable
 from . import *
 CRS = {
     'census'  : 'EPSG:4269'  , # degrees - used by Census
