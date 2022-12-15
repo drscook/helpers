@@ -25,13 +25,14 @@ class Github():
         os.chdir(cwd)
 
     def push(self, msg='changes'):
+        print()
         cwd = os.getcwd()
         os.chdir(self.path)
         # os.system(f'git add .')
         # os.system(f'git commit -m {msg}')
         # os.system(f'git push')
-        os.popen(f'git add .').read()
-        os.popen(f'git commit -m {msg}').read()
+        print(os.popen(f'git add .').read())
+        print(os.popen(f'git commit -m {msg}').read())
         print(os.popen(f'git push').read())
         os.chdir(cwd)
 
