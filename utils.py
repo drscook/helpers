@@ -16,7 +16,6 @@ class Github():
 
 
     def pull(self):
-        print('hi')
         cwd = os.getcwd()
         os.chdir(self.base)
         if os.system(f'git clone {self.url}') != 0:
