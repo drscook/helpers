@@ -23,7 +23,7 @@ class Github():
             os.chdir(self.path)
             os.popen(f'git remote set-url origin {self.url}').read()
             # os.system(f'git pull')
-            os.popen(f'git pull').read()
+            print(os.popen(f'git pull').read())
         os.chdir(cwd)
 
     def push(self, msg='changes'):
