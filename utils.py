@@ -20,7 +20,7 @@ class Github():
         os.chdir(self.base)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
-            print(os.popen(f'git remote set-url origin {self.url}').read())
+            os.popen(f'git remote set-url origin {self.url}')
             print(os.popen(f'git pull').read())
         os.chdir(cwd)
 
