@@ -27,7 +27,7 @@ class Github():
     def push(self, msg='changes'):
         cwd = os.getcwd()
         os.chdir(self.path)
-        print(os.popen(f'git remote set-url origin {self.url}').read())
+        os.popen(f'git remote set-url origin {self.url}')
         print(os.popen(f'git add .').read())
         print(os.popen(f'git commit -m {msg}').read())
         print(os.popen(f'git push').read())
