@@ -1,6 +1,7 @@
 pkgs = (
-    'os', 'sys', 'pathlib', 'warnings', 'time', 'json', 'dataclasses',
-    ('numpy', 'np'), ('pandas', 'pd'), ('geopandas', 'gpd'), ('matplotlib.pyplot', 'plt'),
+    'os', 'sys', 'pathlib', 'warnings', 'time', 'json', 'dataclasses', 
+    ('itertools', 'it'), ('numpy', 'np'), ('pandas', 'pd'), ('geopandas', 'gpd'),
+    ('matplotlib.pyplot', 'plt'),
 )
 for p in pkgs:
     if isinstance(p, str):
