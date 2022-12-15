@@ -79,10 +79,6 @@ def prep(df, fix_names=True):
     return df.apply(to_numeric).convert_dtypes().set_index(df.columns[:idx].tolist())
 
 
-
-
-
-
 class BQ():
     def __init__(self, project_id):
         from google.colab import auth
@@ -121,6 +117,6 @@ class BQ():
 
     def get_columns(self, tbl):
         if self.check_table(tbl):
-            return [s.name for s in client.get_table(tbl).schema]
+            return [s.name for s in self.client.get_table(tbl).schema]
 
 
