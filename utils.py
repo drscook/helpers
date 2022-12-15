@@ -9,16 +9,19 @@ class Github():
     base : str = '/content/'
 
     def __post_init__(self):
-        self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
-        self.path = self.base + self.repo
         os.system(f'git config --global user.email {self.email}')
         os.system(f'git config --global user.name {self.user}')
+        self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
+        self.path = self.base + self.repo
+
 
     def pull(self):
+        print('hi')
         cwd = os.getcwd()
         os.chdir(self.base)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
+            os.popen(f'git remote set-url origin {self.url}').read()
             # os.system(f'git pull')
             os.popen(f'git pull').read()
         os.chdir(cwd)
