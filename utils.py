@@ -120,7 +120,7 @@ class BQ():
         if overwrite:
             self.del_ds(ds)
         try:
-            return self.client.get_dataset(disable)
+            return self.client.get_dataset(ds)
         except:
             return False
 
