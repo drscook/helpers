@@ -121,7 +121,7 @@ class BQ():
     def get_columns(self, tbl):
         t = self.check_table(tbl) 
         if t:
-            return [s.name.lower() for s in t]
+            return [s.name.lower() for s in t.schema]
         else:
             return t
 
