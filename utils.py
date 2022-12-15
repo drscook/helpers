@@ -2,11 +2,11 @@ from . import *
 
 @dataclasses.dataclass
 class Github():
-    access: str
-    repo  : str
-    user  : str = 'drscook'
-    email : str = 'scook@tarleton.edu'
-    base  : str = '/content/'
+    token: str
+    repo : str
+    user : str = 'drscook'
+    email: str = 'scook@tarleton.edu'
+    base : str = '/content/'
 
     def __post_init__(self):
         self.url = f'https://{self.access}@github.com/{self.user}/{self.repo}'
