@@ -120,6 +120,6 @@ class BQ():
 
     def get_columns(self, tbl):
         if self.check_table(tbl):
-            return [s.name for s in self.client.get_table(tbl).schema]
+            return [s.name.lower() for s in self.client.get_table(tbl).schema]
 
 
