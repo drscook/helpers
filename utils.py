@@ -1,4 +1,3 @@
-hi
 from . import *
 
 @dataclasses.dataclass
@@ -20,15 +19,19 @@ class Github():
         os.chdir(self.base)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
-            os.system(f'git pull')
+            # os.system(f'git pull')
+            os.popen(f'git pull').read()
         os.chdir(cwd)
 
     def push(self, msg='changes'):
         cwd = os.getcwd()
         os.chdir(self.path)
-        os.system(f'git add .')
-        os.system(f'git commit -m {msg}')
-        os.system(f'git push')
+        # os.system(f'git add .')
+        # os.system(f'git commit -m {msg}')
+        # os.system(f'git push')
+        os.popen(f'git add .').read()
+        os.popen(f'git commit -m {msg}').read()
+        os.popen(f'git push').read()
         os.chdir(cwd)
 
         
