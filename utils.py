@@ -77,3 +77,17 @@ class BQ():
               geo = gpd.GeoSeries.from_wkt(res['geometry'], crs=CRS['bigquery'])
               res = gpd.GeoDataFrame(res, geometry=geo)
       return res
+
+    def delete_table(self, tbl):
+        self.clien.delete_table(tbl, not_found_ok=True)
+
+    def delete_dataset(self, dataset):
+        self.client.delete_dataset(dataset, not_found_ok=True)
+
+    def copy_dataset(self, curr, targ):
+        self.delete_dataset(targ)
+        self.client.create_dataset(targ)
+        for t in self.client.list_tables(curr):
+            self.client.copy_table(t, f'{targ}.{t.table_id}')
+
+
