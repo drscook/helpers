@@ -22,8 +22,7 @@ class Github():
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
             os.popen(f'git remote set-url origin {self.url}').read()
-            print(os.system(f'git pull'))
-            # print(os.popen(f'git pull').read())
+            print(os.popen(f'git pull').read())
         os.chdir(cwd)
 
     def push(self, msg='changes'):
@@ -34,7 +33,7 @@ class Github():
         # os.system(f'git push')
         os.popen(f'git add .').read()
         os.popen(f'git commit -m {msg}').read()
-        os.popen(f'git push').read()
+        print(os.popen(f'git push').read())
         os.chdir(cwd)
 
         
