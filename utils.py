@@ -3,7 +3,7 @@ from . import *
 @dataclasses.dataclass
 class Github():
     access: str
-    repo  : str = 'config'
+    repo  : str
     user  : str = 'drscook'
     email : str = 'scook@tarleton.edu'
     base  : str = '/content/'
