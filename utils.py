@@ -64,7 +64,6 @@ def prep(df, fix_names=True):
 
 class BQ():
   def __init__(self, project_id):
-    import geopandas as gpd
     from google.colab import auth
     from google.cloud.bigquery import Client
     auth.authenticate_user()
