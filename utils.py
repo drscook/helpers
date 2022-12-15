@@ -9,7 +9,7 @@ class Github():
     base : str = '/content/'
 
     def __post_init__(self):
-        self.url = f'https://{self.access}@github.com/{self.user}/{self.repo}'
+        self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
         self.path = self.base + self.repo
         os.system(f'git config --global user.email {self.email}')
         os.system(f'git config --global user.name {self.user}')
