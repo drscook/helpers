@@ -114,7 +114,7 @@ class BQ():
         return df
 
     def qry_to_tbl(self, qry, tbl, overwrite=False):
-        if not self.check_tbl(tbl, overwrite=overwrite):
+        if not self.get_tbl(tbl, overwrite=overwrite):
             qry = f"""
 create table {tbl} as (
     {subquery(qry)}
