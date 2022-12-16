@@ -4,7 +4,7 @@ pkgs = (
     'pathlib',
     'warnings',
     'time',
-    'codetiming',
+#     'codetiming',
     'json',
     'dataclasses',
     ('itertools', 'it'),
