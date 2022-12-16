@@ -1,4 +1,3 @@
-hi
 pkgs = (
     'os',
     'sys',
