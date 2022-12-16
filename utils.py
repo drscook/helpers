@@ -9,9 +9,9 @@ CRS = {
 @dataclasses.dataclass
 class Github():
     repo : str = 'config'
+    root : str = '/content/'
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
-    root : str = '/content/'
     token: str = ''
 
     def __post_init__(self):
