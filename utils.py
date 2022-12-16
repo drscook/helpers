@@ -27,7 +27,7 @@ class Github():
 
     def sync(self, msg='changes'):
         cwd = os.getcwd()
-        os.makedirs(self.root, exist_ok=True)
+        self.root.mkdir(exist_ok=True, parents=True)
         os.chdir(self.root)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
