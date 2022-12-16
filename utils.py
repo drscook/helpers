@@ -38,8 +38,10 @@ class Github():
         os.chdir(self.path)
         os.popen(f'git remote set-url origin {self.url}')
         self.pull()
-        print(os.popen(f'git add .').read())
-        print(os.popen(f'git commit -m {msg}').read())
+        # print(os.popen(f'git add .').read())
+        # print(os.popen(f'git commit -m {msg}').read())
+        os.popen(f'git add .').read()
+        os.popen(f'git commit -m {msg}').read()
         print(os.popen(f'git push').read())
         os.chdir(cwd)
 
