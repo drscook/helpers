@@ -23,7 +23,7 @@ def pip_import(pkg):
     try:
         exec(cmd)
     except ModuleNotFoundError:
-        print('pip installing ', name)
+        print('pip installing', name)
         os.system(f'pip install {name}')
     return cmd
 
