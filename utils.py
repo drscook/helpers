@@ -15,8 +15,8 @@ class Github():
     token: str = ''
 
     def __post_init__(self):
-        os.popen(f'git config --global user.email {self.email}')
-        os.popen(f'git config --global user.name {self.user}')
+        os.system(f'git config --global user.email {self.email}')
+        os.system(f'git config --global user.name {self.user}')
         if self.token:
             self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
         else:
@@ -29,20 +29,21 @@ class Github():
         os.chdir(self.root)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
-            os.popen(f'git remote set-url origin {self.url}')
-            print(os.popen(f'git pull').read())
+            os.system(f'git remote set-url origin {self.url}')
+            os.system(f'git pull')
         os.chdir(cwd)
 
     def push(self, msg='changes'):
         cwd = os.getcwd()
         os.chdir(self.path)
-        os.popen(f'git remote set-url origin {self.url}')
+        os.system(f'git remote set-url origin {self.url}')
         self.pull()
         # print(os.popen(f'git add .').read())
         # print(os.popen(f'git commit -m {msg}').read())
-        os.popen(f'git add .').read()
-        os.popen(f'git commit -m {msg}').read()
-        print(os.popen(f'git push').read())
+        os.system(f'git add .')
+        os.system(f'git commit -m {msg}')
+        msg = os.popen(f'git push').read()
+        print(msg)
         os.chdir(cwd)
 
         
