@@ -54,6 +54,15 @@ def listify(X):
         except:
             return [X]
 
+def jsonify(file, obj=None):
+    fn = str(file).split('.')[0] + '.json'
+    if obj:
+        with open(fn, 'w') as outfile:
+            json.dump(obj, outfile, indent=4)
+    else:
+        with open(fn, 'r') as infile:
+            return json.load(infile)
+
 def join(parts, sep=', '):
     """ join list into single string """
     return sep.join([str(p) for p in listify(parts)])
