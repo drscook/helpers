@@ -1,4 +1,3 @@
-#hi
 from .imports import *
 CRS = {
     'census'  : 'EPSG:4269'  , # degrees - used by Census
