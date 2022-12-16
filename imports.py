@@ -13,9 +13,9 @@ pkgs = (
     ('matplotlib.pyplot', 'plt'),
 )
 def pip_import(pkg):
-    if isinstance(p, str):
+    if isinstance(pkg, str):
         name, alias = pkg, pkg
-    elif len(p) > 1:
+    elif len(pkg) > 1:
         name, alias = pkg[0], pkg[1]
     else:
         name, alias = pkg[0], pkg[0]
