@@ -21,7 +21,7 @@ class Github():
             self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
         else:
             self.url = f'https://github.com/{self.user}/{self.repo}.git'
-        self.path = self.root + self.repo
+        self.path = self.root / self.repo
 
     def sync(self, msg='changes'):
         cwd = os.getcwd()
