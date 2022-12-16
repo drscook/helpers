@@ -23,29 +23,21 @@ class Github():
             self.url = f'https://github.com/{self.user}/{self.repo}.git'
         self.path = self.root + self.repo
 
-
-    def pull(self):
+    def sync(self):
         cwd = os.getcwd()
+        os.makedirs(self.root, exist_ok=True)
         os.chdir(self.root)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
             os.system(f'git remote set-url origin {self.url}')
             os.system(f'git pull')
+            os.system(f'git add .')
+#             os.system(f'git commit -m {msg}')
+            msg0 = os.popen(f'git commit -m {msg}').read()
+            msg1 = os.popen(f'git push').read()
+            print('msg0', msg0)
+            print('msg1', msg1)
         os.chdir(cwd)
-
-    def push(self, msg='changes'):
-        cwd = os.getcwd()
-        os.chdir(self.path)
-        os.system(f'git remote set-url origin {self.url}')
-        self.pull()
-        # print(os.popen(f'git add .').read())
-        # print(os.popen(f'git commit -m {msg}').read())
-        os.system(f'git add .')
-        os.system(f'git commit -m {msg}')
-        msg = os.popen(f'git push').read()
-        print(msg)
-        os.chdir(cwd)
-
         
 def listify(X):
     """Turns almost anything into a list"""
