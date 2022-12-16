@@ -32,11 +32,11 @@ class Github():
             os.system(f'git remote set-url origin {self.url}')
             os.system(f'git pull')
             os.system(f'git add .')
-#             os.system(f'git commit -m {msg}')
-            msg0 = os.popen(f'git commit -m {msg}').read()
-            msg1 = os.popen(f'git push').read()
-            print('msg0', msg0)
-            print('msg1', msg1)
+            res = os.popen(f'git commit -m {msg}').read()
+            os.system(f'git push')
+            print(res)
+            if not 'nothing to commit' in res:
+                print('you may not have push priveleges to this repo')
         os.chdir(cwd)
         
 def listify(X):
