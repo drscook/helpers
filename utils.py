@@ -53,6 +53,11 @@ def listify(X):
             return list(X)
         except:
             return [X]
+        
+def mkdir(path, overwrite=False):
+    if overwrite:
+        shutil.rmtree(path, ignore_errors=True)
+    path.mkdir(exist_ok=True, parents=True)
 
 def jsonify(file, obj=None):
     fn = str(file).split('.')[0] + '.json'
