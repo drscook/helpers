@@ -23,7 +23,7 @@ class Github():
             self.url = f'https://github.com/{self.user}/{self.repo}.git'
         self.path = self.root + self.repo
 
-    def sync(self):
+    def sync(self, msg='changes'):
         cwd = os.getcwd()
         os.makedirs(self.root, exist_ok=True)
         os.chdir(self.root)
