@@ -37,7 +37,7 @@ class Github():
             res = os.popen(f'git commit -m {msg}').read()
             print(res)
             if 'Your branch is ahead of' in res:
-                print('you may not have push priveleges to this repo')
+                print('you might not have push priveleges to this repo')
         os.chdir(cwd)
         
 def listify(X):
