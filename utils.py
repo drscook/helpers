@@ -55,7 +55,11 @@ def listify(X):
             return list(X)
         except:
             return [X]
-        
+
+def cartesian(D):
+    D = {key: listify(val) for key, val in D.items()}
+    return [dict(zip(D.keys(), x)) for x in it.product(*D.values())]
+
 def mkdir(path, overwrite=False):
     if overwrite:
         shutil.rmtree(path, ignore_errors=True)
