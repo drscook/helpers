@@ -1,4 +1,4 @@
-from .common_imports import *
+from .imports import *
 CRS = {
     'census'  : 'EPSG:4269'  , # degrees - used by Census
     'bigquery': 'EPSG:4326'  , # WSG84 - used by Bigquery
