@@ -1,4 +1,6 @@
 from .imports import *
+warnings.filterwarnings('ignore', message='.*ShapelyDeprecationWarning.*')
+warnings.simplefilter(action='ignore', category=FutureWarning)
 CRS = {
     'census'  : 'EPSG:4269'  , # degrees - used by Census
     'bigquery': 'EPSG:4326'  , # WSG84 - used by Bigquery
