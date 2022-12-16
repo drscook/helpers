@@ -11,7 +11,7 @@ class Github():
     repo : str = 'config'
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
-    base : str = '/content/'
+    root : str = '/content/'
     token: str = ''
 
     def __post_init__(self):
@@ -21,12 +21,12 @@ class Github():
             self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
         else:
             self.url = f'https://github.com/{self.user}/{self.repo}.git'
-        self.path = self.base + self.repo
+        self.path = self.root + self.repo
 
 
     def pull(self):
         cwd = os.getcwd()
-        os.chdir(self.base)
+        os.chdir(self.root)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
             os.popen(f'git remote set-url origin {self.url}')
