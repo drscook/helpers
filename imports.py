@@ -2,6 +2,7 @@ pkgs = (
     'os',
     'sys',
     'pathlib',
+    'shutils',
     'warnings',
     'time',
     'codetiming',
