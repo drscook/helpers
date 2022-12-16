@@ -12,7 +12,7 @@ class Github():
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
     base : str = '/content/'
-    token: str = None
+    token: str = ''
 
     def __post_init__(self):
         os.popen(f'git config --global user.email {self.email}')
