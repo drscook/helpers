@@ -8,16 +8,19 @@ CRS = {
 
 @dataclasses.dataclass
 class Github():
-    token: str
-    repo : str
+    repo : str = 'config'
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
     base : str = '/content/'
+    token: str = None
 
     def __post_init__(self):
         os.popen(f'git config --global user.email {self.email}')
         os.popen(f'git config --global user.name {self.user}')
-        self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
+        if token:
+            self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
+        else:
+            self.url = f'https://github.com/{self.user}/{self.repo}.git'
         self.path = self.base + self.repo
 
 
