@@ -191,7 +191,7 @@ create table {tbl} as (
 
     def df_to_tbl(self, df, tbl, overwrite=False):
         if not self.get_tbl(tbl, overwrite=overwrite):
-            X = prep(df).reset_index().drop(columns=['index', 'level_0'], errors='ignore')
+            X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
             self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
             self.client.load_table_from_dataframe(X, tbl).result()
         return tbl
