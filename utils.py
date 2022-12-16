@@ -31,9 +31,9 @@ class Github():
             os.chdir(self.path)
             os.system(f'git remote set-url origin {self.url}')
             os.system(f'git pull')
-            os.system(f'git add .')
-            res = os.popen(f'git commit -m {msg}').read()
-            os.system(f'git push')
+            res = os.popen(f'git add .').read()
+            res+= os.popen(f'git commit -m {msg}').read()
+            res+= os.popen(f'git push').read()
             print(res)
             if 'Your branch is ahead of' in res and 'nothing to commit' in res:
                 print('you may not have push priveleges to this repo')
