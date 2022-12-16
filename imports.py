@@ -10,7 +10,7 @@ pkgs = (
     ('itertools', 'it'),
     ('numpy', 'np'),
     ('pandas', 'pd'),
-    ('geopandas', 'gpd'),
+#     ('geopandas', 'gpd'),
     ('matplotlib.pyplot', 'plt'),
 )
 def pip_import(pkg):
