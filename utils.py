@@ -35,7 +35,7 @@ class Github():
             res = os.popen(f'git commit -m {msg}').read()
             os.system(f'git push')
             print(res)
-            if not 'nothing to commit' in res:
+            if 'Your branch is ahead of' in res:
                 print('you may not have push priveleges to this repo')
         os.chdir(cwd)
         
