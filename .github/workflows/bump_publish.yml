@@ -11,7 +11,7 @@ jobs:
       id: tag
       uses: anothrNick/github-tag-action@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         WITH_V: true
         DEFAULT_BUMP: PATCH
     
@@ -36,4 +36,4 @@ jobs:
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        password: ${{ secrets.PYPI_TOKEN }}
