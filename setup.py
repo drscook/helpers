@@ -11,12 +11,12 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
 VERSION = '{{VERSION_PLACEHOLDER}}'
 
 # CHANGEME VARS
-PACKAGE_NAME = "drscook_utilities"
+PACKAGE_NAME = "drscook_config"
 DESCRIPTION = 'helpers'
 LONG_DESCRIPTION = 'helpers'
 AUTHOR_NAME = "Scott Cook"
 AUTHOR_EMAIL = "scook@tarleont.edu"
-PROJECT_URL = "https://github.com/drscook/utilities"
+PROJECT_URL = "https://github.com/drscookconfig"
 REQUIRED_PACKAGES = ['numpy', 'pandas'] # required 3rd party tools used by your package
 PROJECT_KEYWORDS = ['pypi', 'python']
 # Read more about classifiers at
