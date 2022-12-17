@@ -11,7 +11,7 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
 VERSION = '{{VERSION_PLACEHOLDER}}'
 
 # CHANGEME VARS
-PACKAGE_NAME = "drscook_config"
+PACKAGE_NAME = "helpers_drscook"
 DESCRIPTION = 'helpers'
 LONG_DESCRIPTION = 'helpers'
 AUTHOR_NAME = "Scott Cook"
