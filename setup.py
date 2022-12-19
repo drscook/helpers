@@ -9,6 +9,7 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
 
 # This gets deployed when a new release is made by github actions
 VERSION = '{{VERSION_PLACEHOLDER}}'
+REQUIRES_PYTHON = '>=3.8'
 
 # CHANGEME VARS
 PACKAGE_NAME = "helpers_drscook"
