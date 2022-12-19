@@ -1,6 +1,7 @@
 name: Publish Python 🐍 distributions 📦 to PyPI
 # on: workflow_dispatch
-on: push
+# on: push
+on: release
 jobs:
   build:
     runs-on: ubuntu-latest
