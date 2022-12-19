@@ -1,1 +1,2 @@
-# `Helpers for Scott Cook & his students`
+# `Helper code for Scott Cook & his students`
+hi
