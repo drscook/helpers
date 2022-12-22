@@ -193,7 +193,9 @@ create table {tbl} as (
         if not self.get_tbl(tbl, overwrite=overwrite):
             X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
             self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
-            self.client.load_table_from_dataframe(X, tbl).result()
+            self.client.insert_rows_from_dataframe(tbl, X).result()
+#             try
+#             self.client.load_table_from_dataframe(X, tbl).result()
         return tbl
 
     def tbl_to_df(self, tbl, rows=10):
