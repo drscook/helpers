@@ -18,7 +18,7 @@ LONG_DESCRIPTION = 'helpers'
 AUTHOR_NAME = "Scott Cook"
 AUTHOR_EMAIL = "scook@tarleont.edu"
 PROJECT_URL = "https://github.com/drscookconfig"
-REQUIRED_PACKAGES = ['codetiming', 'shutils', 'numpy', 'pandas', 'geopandas', 'matplotlib']
+REQUIRED_PACKAGES = ['codetiming', 'shutils', 'numpy', 'pandas', 'matplotlib']
 PROJECT_KEYWORDS = ['pypi', 'python']
 # Read more about classifiers at
 # https://pypi.org/classifiers/
