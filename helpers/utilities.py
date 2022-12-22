@@ -114,7 +114,7 @@ def transform_labeled(trans, df):
 def decade(year):
     return int(year) // 10 * 10
 
-class BQ():
+class BigQuery():
     def __init__(self, project_id):
         from google.colab import auth
         from google.cloud.bigquery import Client
