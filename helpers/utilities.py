@@ -199,7 +199,7 @@ class BigQuery():
               df = gpd.GeoDataFrame(df, geometry=geo)
         return df
 
-    def qry_to_tbl(self, qry, tbl, overwrite=False):
+    def qry_to_tbl(self, qry, tbl, overwrite=True):
         if not self.get_tbl(tbl, overwrite=overwrite):
             qry = f"""
 create table {tbl} as (
@@ -209,7 +209,7 @@ create table {tbl} as (
             self.run_qry(qry)
         return tbl
 
-    def df_to_tbl(self, df, tbl, overwrite=False):
+    def df_to_tbl(self, df, tbl, overwrite=True):
         X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
         self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
         t = self.get_schema(tbl, overwrite=overwrite)
