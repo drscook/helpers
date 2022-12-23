@@ -143,11 +143,19 @@ class BigQuery():
         except:
             return False
 
-    def get_cols(self, tbl):
+    def get_schema(self, tbl):
         t = self.get_tbl(tbl) 
         if t:
-            t = [s.name.lower() for s in t.schema]
-        return t
+            return t.schema
+        else:
+            return t
+    
+    def get_cols(self, tbl):
+        t = self.get_schema(tbl) 
+        if t:
+            return [s.name.lower() for s in t]
+        else:
+            return t
 
     def copy_tbl(self, curr, targ=None, overwrite=False):
         if targ is None or targ == curr:
@@ -193,12 +201,14 @@ create table {tbl} as (
         if not self.get_tbl(tbl, overwrite=overwrite):
             X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
             self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
-            self.client.insert_rows_from_dataframe(tbl, X).result()
-#             try
-#             self.client.load_table_from_dataframe(X, tbl).result()
+            t = self.get_schema(tbl)
+            if t:
+                self.client.insert_rows_from_dataframe(tbl, X, t).result()
+            else:
+                self.client.load_table_from_dataframe(X, tbl).result()
         return tbl
 
-    def tbl_to_df(self, tbl, rows=10):
+    def tbl_to_df(self, tbl, rows=3):
         try:
             assert rows > 0
             qry = f'select * from {tbl} limit {rows}'
