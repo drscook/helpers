@@ -80,9 +80,15 @@ def rjust(msg, width, fillchar='0'):
 def ljust(msg, width, fillchar='0'):
     return str(msg).ljust(width, fillchar)
 
+def replace(msg, table):
+    for key, repl in table.items():
+        for pat in listify(key):
+            msg = msg.replace(pat, repl)
+    return msg
+
 def join(parts, sep=', '):
     """ join list into single string """
-    return sep.join([str(p) for p in listify(parts)])
+    return sep.join([str(msg) for msg in listify(parts)])
 
 def subquery(qry, indents=1):
     """indent query for inclusion as subquery"""
