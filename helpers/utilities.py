@@ -1,4 +1,4 @@
-from common_imports import *
+from .common_imports import *
 warnings.filterwarnings('ignore', message='.*ShapelyDeprecationWarning.*')
 warnings.simplefilter(action='ignore', category=FutureWarning)
 CRS = {
