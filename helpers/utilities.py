@@ -81,7 +81,7 @@ def ljust(msg, width, fillchar='0'):
     return str(msg).ljust(width, fillchar)
 
 def replace(msg, table):
-    for pats, repl in table.items():
+    for pats, repl in table:
         for pat in listify(pats):
             msg = msg.replace(pat, repl)
     return msg
