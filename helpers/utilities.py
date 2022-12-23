@@ -226,3 +226,11 @@ create table {tbl} as (
         except:
             qry = f'select * from {tbl}'
         return self.qry_to_df(qry)
+    
+    def union(self, src, targ, delete=True, distinct=False):
+        sep = '\nunion distinct\n' if distinct else '\nunion all\n'
+        src = listify(src)
+        qry = join(['select * from ' + t for t in src], sep)
+        self.qry_to_tbl(qry, tbl)
+        if delete:
+            [self.del_tbl(t) for t in src]
