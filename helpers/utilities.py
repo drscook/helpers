@@ -135,23 +135,15 @@ class BigQuery():
         except:
             return False
 
-    def get_ds(self, ds, overwrite=False):
-        if overwrite:
-            self.del_ds(ds)
-        try:
-            return self.client.get_dataset(ds)
-        except:
-            return False
-
-    def get_schema(self, tbl):
-        t = self.get_tbl(tbl) 
+    def get_schema(self, tbl, overwrite=False):
+        t = self.get_tbl(tbl, overwrite)
         if t:
             return t.schema
         else:
             return t
     
-    def get_cols(self, tbl):
-        t = self.get_schema(tbl) 
+    def get_cols(self, tbl, overwrite=False):
+        t = self.get_schema(tbl, overwrite)
         if t:
             return [s.name.lower() for s in t]
         else:
@@ -164,6 +156,14 @@ class BigQuery():
             print(f'{targ} exists - use overwrite=True to replace')
         else:
             self.client.copy_table(curr, targ)
+            
+    def get_ds(self, ds, overwrite=False):
+        if overwrite:
+            self.del_ds(ds)
+        try:
+            return self.client.get_dataset(ds)
+        except:
+            return False
 
     def copy_ds(self, curr, targ=None, overwrite=False):
         if targ is None or targ == curr:
@@ -198,17 +198,15 @@ create table {tbl} as (
         return tbl
 
     def df_to_tbl(self, df, tbl, overwrite=False):
-        if not self.get_tbl(tbl, overwrite=overwrite):
-            X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
-            self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
-            t = self.get_schema(tbl)
-            primt(t)
-            if t:
-                print('inserting')
-                self.client.insert_rows_from_dataframe(tbl, X, t).result()
-            else:
-                print('creating')
-                self.client.load_table_from_dataframe(X, tbl).result()
+        X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
+        self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
+        t = self.get_schema(tbl, overwrite=overwrite)
+        if t:
+            print('inserting')
+            self.client.insert_rows_from_dataframe(tbl, X, t).result()
+        else:
+            print('creating')
+            self.client.load_table_from_dataframe(X, tbl).result()
         return tbl
 
     def tbl_to_df(self, tbl, rows=3):
