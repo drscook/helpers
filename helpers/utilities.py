@@ -203,11 +203,11 @@ create table {tbl} as (
             self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
             t = self.get_schema(tbl)
             if t:
+                print('inserting')
                 self.client.insert_rows_from_dataframe(tbl, X, t).result()
-                print('inserted')
             else:
+                print('creating')
                 self.client.load_table_from_dataframe(X, tbl).result()
-                print('created')
         return tbl
 
     def tbl_to_df(self, tbl, rows=3):
