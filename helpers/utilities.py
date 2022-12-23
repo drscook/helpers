@@ -202,6 +202,7 @@ create table {tbl} as (
             X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
             self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
             t = self.get_schema(tbl)
+            primt(t)
             if t:
                 print('inserting')
                 self.client.insert_rows_from_dataframe(tbl, X, t).result()
