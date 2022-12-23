@@ -133,6 +133,9 @@ class BigQuery():
         auth.authenticate_user()
         self.client = Client(project=project_id)
   
+    def extract_ds(self, tbl):
+        return join(tbl.split('.')[:-1], '.')
+    
     def del_tbl(self, tbl):
         self.client.delete_table(tbl, not_found_ok=True)
 
@@ -205,13 +208,13 @@ class BigQuery():
 create table {tbl} as (
     {subquery(qry)}
 )"""
-            self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
+            self.client.create_dataset(self.extract_ds(tbl), exists_ok=True)
             self.run_qry(qry)
         return tbl
 
     def df_to_tbl(self, df, tbl, overwrite=True):
         X = df.reset_index().drop(columns=['index', 'level_0'], errors='ignore')
-        self.client.create_dataset(tbl.split('.')[0], exists_ok=True)
+        self.client.create_dataset(self.extract_ds(tbl), exists_ok=True)
         t = self.get_schema(tbl, overwrite=overwrite)
         if t:
             self.client.insert_rows_from_dataframe(tbl, X, t)
