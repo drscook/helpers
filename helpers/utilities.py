@@ -80,11 +80,16 @@ def rjust(msg, width, fillchar='0'):
 def ljust(msg, width, fillchar='0'):
     return str(msg).ljust(width, fillchar)
 
-def replace(msg, table):
-    for pats, repl in table:
-        for pat in listify(pats):
-            msg = msg.replace(pat, repl)
-    return msg
+def replace(msg, repls):
+    for repl in repls:
+        for pat in listify(repl[0]):
+            msg = msg.replace(pat, repl[1])
+        
+#         pats, repl = listify(item[0])
+#     for pats, repl in table:
+#         for pat in listify(pats):
+#             msg = msg.replace(pat, repl)
+#     return msg
 
 def join(parts, sep=', '):
     """ join list into single string """
