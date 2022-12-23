@@ -204,8 +204,10 @@ create table {tbl} as (
             t = self.get_schema(tbl)
             if t:
                 self.client.insert_rows_from_dataframe(tbl, X, t).result()
+                print('inserted')
             else:
                 self.client.load_table_from_dataframe(X, tbl).result()
+                print('created')
         return tbl
 
     def tbl_to_df(self, tbl, rows=3):
