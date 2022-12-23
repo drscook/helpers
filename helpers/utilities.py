@@ -74,6 +74,12 @@ def jsonify(file, obj=None):
         with open(fn, 'r') as infile:
             return json.load(infile)
 
+def rjust(msg, width, fillchar='0'):
+    return str(msg).rjust(width, fillchar)
+
+def ljust(msg, width, fillchar='0'):
+    return str(msg).ljust(width, fillchar)
+
 def join(parts, sep=', '):
     """ join list into single string """
     return sep.join([str(p) for p in listify(parts)])
