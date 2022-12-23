@@ -231,6 +231,6 @@ create table {tbl} as (
         sep = '\nunion distinct\n' if distinct else '\nunion all\n'
         src = listify(src)
         qry = join(['select * from ' + t for t in src], sep)
-        self.qry_to_tbl(qry, tbl)
+        self.qry_to_tbl(qry, targ)
         if delete:
             [self.del_tbl(t) for t in src]
