@@ -203,7 +203,7 @@ create table {tbl} as (
         t = self.get_schema(tbl, overwrite=overwrite)
         if t:
             print('inserting')
-            self.client.insert_rows_from_dataframe(tbl, X, t).result()
+            self.client.insert_rows_from_dataframe(tbl, X, t)
         else:
             print('creating')
             self.client.load_table_from_dataframe(X, tbl).result()
