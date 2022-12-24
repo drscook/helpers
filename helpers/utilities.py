@@ -90,7 +90,6 @@ def prep(df, fix_names=True):
     if fix_names:
         df.columns = [c.strip().lower() for c in df.columns]
     return df.apply(to_numeric).convert_dtypes().set_index(df.columns[:idx].tolist())
-    # return df.apply(to_numeric).set_index(df.columns[:idx].tolist())
 
 def transform_labeled(trans, df):
     """apply scikit-learn tranformation and return dataframe with appropriate column names and index"""
