@@ -102,7 +102,7 @@ def decade(year):
 class BigQuery():
     project_id: str
 
-    def __post_init__(self, project_id):
+    def __post_init__(self):
         from google.colab import auth
         from google.cloud.bigquery import Client
         auth.authenticate_user()
