@@ -9,7 +9,7 @@ allow-direct-references = true
 name = "helpers_drscook"
 dynamic = ["version"]
 description = "Commonly used helpers"
-dependencies = ['codetiming', 'shutils', 'numpy', 'pandas', 'matplotlib']
+dependencies = ['codetiming', 'shutils', 'numpy', 'pandas', 'matplotlib', 'jupyter-autotime']
 
 [tool.hatch.version]
 path = "helpers/__about__.py"
