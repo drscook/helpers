@@ -76,13 +76,13 @@ def jsonify(file, obj=None):
 
 def rjust(msg, width, fillchar='0'):
     if isinstance(msg, pd.Series):
-        return msg.astype(str).rjust(width, fillchar)
+        return msg.astype(str).str.rjust(width, fillchar)
     else:
         return str(msg).rjust(width, fillchar)
 
 def ljust(msg, width, fillchar='0'):
     if isinstance(msg, pd.Series):
-        return msg.astype(str).ljust(width, fillchar)
+        return msg.astype(str).str.ljust(width, fillchar)
     else:
         return str(msg).ljust(width, fillchar)
 
