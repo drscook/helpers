@@ -75,10 +75,16 @@ def jsonify(file, obj=None):
             return json.load(infile)
 
 def rjust(msg, width, fillchar='0'):
-    return str(msg).rjust(width, fillchar)
+    if isinstance(msg, pd.Series):
+        return msg.astype(str).rjust(width, fillchar)
+    else:
+        return str(msg).rjust(width, fillchar)
 
 def ljust(msg, width, fillchar='0'):
-    return str(msg).ljust(width, fillchar)
+    if isinstance(msg, pd.Series):
+        return msg.astype(str).ljust(width, fillchar)
+    else:
+        return str(msg).ljust(width, fillchar)
 
 def replace(msg, repls):
     for pats, repl in repls.items():
