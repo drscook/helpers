@@ -173,8 +173,9 @@ class BigQuery():
         if res.total_rows > 0:
           df = prep(res.to_dataframe())
           if 'geometry' in df.columns:
-              geo = gpd.GeoSeries.from_wkt(df['geometry'], crs=CRS['bigquery'])
-              df = gpd.GeoDataFrame(df, geometry=geo)
+                import geopandas as gpd
+                geo = gpd.GeoSeries.from_wkt(df['geometry'], crs=CRS['bigquery'])
+                df = gpd.GeoDataFrame(df, geometry=geo)
         return df
 
     def qry_to_tbl(self, qry, tbl, overwrite=True):
