@@ -8,40 +8,6 @@ CRS = {
     'length'  : 'ESRI:102005', # meters
 }
 
-@dataclasses.dataclass
-class Github():
-    repo : str = 'config'
-    root : str = '/content/'
-    user : str = 'drscook'
-    email: str = 'scook@tarleton.edu'
-    token: str = ''
-
-    def __post_init__(self):
-        os.system(f'git config --global user.email {self.email}')
-        os.system(f'git config --global user.name {self.user}')
-        if self.token:
-            self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
-        else:
-            self.url = f'https://github.com/{self.user}/{self.repo}.git'
-        self.path = self.root / self.repo
-
-    def sync(self, msg='changes'):
-        cwd = os.getcwd()
-        self.root.mkdir(exist_ok=True, parents=True)
-        os.chdir(self.root)
-        if os.system(f'git clone {self.url}') != 0:
-            os.chdir(self.path)
-            os.system(f'git remote set-url origin {self.url}')
-            os.system(f'git pull')
-            os.system(f'git add .')
-            os.system(f'git commit -m {msg}')
-            os.system(f'git push')
-            res = os.popen(f'git commit -m {msg}').read()
-            print(res)
-            if 'Your branch is ahead of' in res:
-                print('you might not have push priveleges to this repo')
-        os.chdir(cwd)
-        
 def listify(X):
     """Turns almost anything into a list"""
     if isinstance(X, list):
@@ -132,12 +98,15 @@ def transform_labeled(trans, df):
 def decade(year):
     return int(year) // 10 * 10
 
+@dataclasses.dataclass
 class BigQuery():
-    def __init__(self, project_id):
+    project_id: str
+
+    def __post_init__(self, project_id):
         from google.colab import auth
         from google.cloud.bigquery import Client
         auth.authenticate_user()
-        self.client = Client(project=project_id)
+        self.client = Client(project=self.project_id)
   
     def extract_ds(self, tbl):
         return join(tbl.split('.')[:-1], '.')
@@ -243,3 +212,38 @@ create table {tbl} as (
         self.qry_to_tbl(qry, targ)
         if delete:
             [self.del_tbl(t) for t in src]
+
+
+@dataclasses.dataclass
+class Github():
+    repo : str = 'config'
+    root : str = '/content/'
+    user : str = 'drscook'
+    email: str = 'scook@tarleton.edu'
+    token: str = ''
+
+    def __post_init__(self):
+        os.system(f'git config --global user.email {self.email}')
+        os.system(f'git config --global user.name {self.user}')
+        if self.token:
+            self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
+        else:
+            self.url = f'https://github.com/{self.user}/{self.repo}.git'
+        self.path = self.root / self.repo
+
+    def sync(self, msg='changes'):
+        cwd = os.getcwd()
+        self.root.mkdir(exist_ok=True, parents=True)
+        os.chdir(self.root)
+        if os.system(f'git clone {self.url}') != 0:
+            os.chdir(self.path)
+            os.system(f'git remote set-url origin {self.url}')
+            os.system(f'git pull')
+            os.system(f'git add .')
+            os.system(f'git commit -m {msg}')
+            os.system(f'git push')
+            res = os.popen(f'git commit -m {msg}').read()
+            print(res)
+            if 'Your branch is ahead of' in res:
+                print('you might not have push priveleges to this repo')
+        os.chdir(cwd)
