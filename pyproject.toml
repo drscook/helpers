@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project]
+name = "helpers_drscook"
+dynamic = ["version"]
+description = "Commonly used helpers"
+dependencies = ['codetiming', 'shutils', 'numpy', 'pandas', 'matplotlib']
+
+[tool.hatch.version]
+path = "helpers/__about__.py"
