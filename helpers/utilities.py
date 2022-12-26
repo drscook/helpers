@@ -44,6 +44,13 @@ def ljust(msg, width, fillchar='0'):
     else:
         return str(msg).ljust(width, fillchar)
 
+def lower(msg):
+    try:
+        msg.lower()
+    
+    if isinstance(msg, str):
+        return msg.lower()
+
 def replace(msg, repls):
     for pats, repl in repls.items():
         for pat in listify(pats):
