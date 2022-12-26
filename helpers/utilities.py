@@ -10,48 +10,42 @@ def to_numeric(ser):
 
 def listify(X):
     """Turns almost anything into a list"""
-    with warnings.catch_warnings():
-        warnings.simplefilter(action='ignore')
-        if X is None or X is np.nan or X is '':
-            return []
-        elif isinstance(X, (list, tuple, set, pd.Index)):
-            return list(X)
-        elif isinstance(X, dict):
-            return [list(X.keys()), list(X.values())]
-        elif isinstance(X, np.ndarray):
-            return X.tolist()
-        elif isinstance(X, (pd.Series, pd.DataFrame)):
-            return X.values.tolist()
-        else:
-            return [X]
+    if X is None or X is np.nan:
+        return []
+    elif isinstance(X, (list, tuple, set, pd.Index)):
+        return list(X)
+    elif isinstance(X, dict):
+        return [list(X.keys()), list(X.values())]
+    elif isinstance(X, np.ndarray):
+        return X.tolist()
+    elif isinstance(X, (pd.Series, pd.DataFrame)):
+        return X.values.tolist()
+    else:
+        return [X]
 
 def prep(X, mode='lower', fix_names=True):
     modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper']
     assert mode in modes, f'mode must one of {modes} ... got {mode}'
-
-    # with warnings.simplefilter(action='ignore', category=SyntaxWarning):
-    with warnings.catch_warnings():
-        warnings.simplefilter(action='ignore')
-        if X is None or X is np.nan or X is '':
-            return None
-        elif isinstance(X, str):
-            return getattr(X.strip(), mode)()
-        elif isinstance(X, (list, tuple, set, pd.Index)):
-            return type(X)((prep(x, mode) for x in X))
-        elif isinstance(X, dict):
-            return dict(zip(*prep(listify(X), mode)))
-        elif isinstance(X, np.ndarray):
-            return np.array( prep(listify(X), mode))
-        elif isinstance(X, pd.DataFrame):
-            idx = len(X.index.names)
-            X = X.reset_index()
-            if fix_names:
-                X.columns = prep(X.columns, mode)
-            return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
-        elif isinstance(X, pd.Series):
-            return prep(X.to_frame(), mode).squeeze()
-        else:
-            return X
+    if X is None or X is np.nan:
+        return None
+    elif isinstance(X, str):
+        return getattr(X.strip(), mode)()
+    elif isinstance(X, (list, tuple, set, pd.Index)):
+        return type(X)((prep(x, mode) for x in X))
+    elif isinstance(X, dict):
+        return dict(zip(*prep(listify(X), mode)))
+    elif isinstance(X, np.ndarray):
+        return np.array( prep(listify(X), mode))
+    elif isinstance(X, pd.DataFrame):
+        idx = len(X.index.names)
+        X = X.reset_index()
+        if fix_names:
+            X.columns = prep(X.columns, mode)
+        return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
+    elif isinstance(X, pd.Series):
+        return prep(X.to_frame(), mode).squeeze()
+    else:
+        return X
 
 def cartesian(D):
     D = {key: listify(val) for key, val in D.items()}
