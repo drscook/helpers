@@ -1,7 +1,4 @@
 from .common_imports import *
-# warnings.filterwarnings('ignore', message='.*ShapelyDeprecationWarning.*')
-# warnings.simplefilter(action='ignore', category=FutureWarning)
-
 
 def listify(X):
     """Turns almost anything into a list"""
