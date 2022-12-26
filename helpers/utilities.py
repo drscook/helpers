@@ -1,5 +1,5 @@
 from .common_imports import *
-warnings.filterwarnings('ignore', message='.*SyntaxWarning: "is" with a literal. Did you mean "=="?*')
+warnings.filterwarnings('ignore', message='.*SyntaxWarning: "is" with a literal*.')
 def to_numeric(ser):
     """converts columns to small numeric dtypes when possible"""
     dt = str(ser.dtype)
