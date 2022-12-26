@@ -11,9 +11,7 @@ def to_numeric(ser):
 def listify(X):
     """Turns almost anything into a list"""
     t = type(X)
-    if X in [None, np.nan, '']:
-        return []
-    elif t in [list, tuple, set, pd.Index]:
+    if   t in [list, tuple, set, pd.Index]:
         return list(X)
     elif t in [dict]:
         return [list(X.keys()), list(X.values())]
@@ -21,6 +19,8 @@ def listify(X):
         return X.tolist()
     elif t in [pd.Series, pd.DataFrame]:
         return X.values.tolist()
+    elif X in [None, np.nan, '']:
+        return []
     else:
         return [X]
 
@@ -28,9 +28,7 @@ def prep(X, mode='lower', fix_names=True):
     modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper']
     assert mode in modes, f'mode must one of {modes} ... got {mode}'
     t = type(X)
-    if X in [None, np.nan, '']:
-        return None
-    elif t in [str]:
+    if   t in [str]:
         return getattr(X.strip(), mode)()
     elif t in [list, tuple, set, pd.Index]:
         return t((prep(x, mode) for x in X))
@@ -46,6 +44,8 @@ def prep(X, mode='lower', fix_names=True):
         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
     elif t in [pd.Series]:
         return prep(X.to_frame(), mode).squeeze()
+    elif X in [None, np.nan, '']:
+        return None
     else:
         return X
 
