@@ -1,5 +1,5 @@
 from .common_imports import *
-warnings.filterwarnings('ignore', message='.*SyntaxWarning: "is" with a literal. Did you mean "=="?.*')
+warnings.filterwarnings('ignore', message='.*SyntaxWarning: "is" with a literal. Did you mean "=="?*')
 def to_numeric(ser):
     """converts columns to small numeric dtypes when possible"""
     dt = str(ser.dtype)
@@ -10,16 +10,15 @@ def to_numeric(ser):
 
 def listify(X):
     """Turns almost anything into a list"""
-    t = type(X)
     if X is None or X is np.nan or X is '':
         return []
-    elif t in [list, tuple, set, pd.Index]:
+    elif isinstance(X, (list, tuple, set, pd.Index)):
         return list(X)
-    elif t in [dict]:
+    elif isinstance(X, dict):
         return [list(X.keys()), list(X.values())]
-    elif t in [np.ndarray]:
+    elif isinstance(X, np.ndarray):
         return X.tolist()
-    elif t in [pd.Series, pd.DataFrame]:
+    elif isinstance(X, (pd.Series, pd.DataFrame)):
         return X.values.tolist()
     else:
         return [X]
@@ -27,24 +26,23 @@ def listify(X):
 def prep(X, mode='lower', fix_names=True):
     modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper']
     assert mode in modes, f'mode must one of {modes} ... got {mode}'
-    t = type(X)
     if X is None or X is np.nan or X is '':
         return None
-    if t in [str]:
+    elif isinstance(X, str):
         return getattr(X.strip(), mode)()
-    elif t in [list, tuple, set, pd.Index]:
+    elif isinstance(X, (list, tuple, set, pd.Index)):
         return t((prep(x, mode) for x in X))
-    elif t in [dict]:
+    elif isinstance(X, dict):
         return dict(zip(*prep(listify(X), mode)))
-    elif t in [np.ndarray]:
+    elif isinstance(X, np.ndarray):
         return np.array( prep(listify(X), mode))
-    elif t in [pd.DataFrame]:
+    elif isinstance(X, pd.DataFrame):
         idx = len(X.index.names)
         X = X.reset_index()
         if fix_names:
             X.columns = prep(X.columns, mode)
         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
-    elif t in [pd.Series]:
+    elif isinstance(X, pd.Series):
         return prep(X.to_frame(), mode).squeeze()
     else:
         return X
