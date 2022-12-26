@@ -1,5 +1,5 @@
 from .common_imports import *
-
+warnings.filterwarnings('ignore', message='.*SyntaxWarning: "is" with a literal. Did you mean "=="?.*')
 def to_numeric(ser):
     """converts columns to small numeric dtypes when possible"""
     dt = str(ser.dtype)
@@ -11,7 +11,9 @@ def to_numeric(ser):
 def listify(X):
     """Turns almost anything into a list"""
     t = type(X)
-    if   t in [list, tuple, set, pd.Index]:
+    if X is None or X is np.nan or X is '':
+        return []
+    elif t in [list, tuple, set, pd.Index]:
         return list(X)
     elif t in [dict]:
         return [list(X.keys()), list(X.values())]
@@ -19,8 +21,6 @@ def listify(X):
         return X.tolist()
     elif t in [pd.Series, pd.DataFrame]:
         return X.values.tolist()
-    elif X in [None, np.nan, '']:
-        return []
     else:
         return [X]
 
@@ -28,7 +28,9 @@ def prep(X, mode='lower', fix_names=True):
     modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper']
     assert mode in modes, f'mode must one of {modes} ... got {mode}'
     t = type(X)
-    if   t in [str]:
+    if X is None or X is np.nan or X is '':
+        return None
+    if t in [str]:
         return getattr(X.strip(), mode)()
     elif t in [list, tuple, set, pd.Index]:
         return t((prep(x, mode) for x in X))
@@ -44,8 +46,6 @@ def prep(X, mode='lower', fix_names=True):
         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
     elif t in [pd.Series]:
         return prep(X.to_frame(), mode).squeeze()
-    elif X in [None, np.nan, '']:
-        return None
     else:
         return X
 
