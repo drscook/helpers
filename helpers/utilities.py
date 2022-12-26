@@ -1,5 +1,6 @@
 from .common_imports import *
-warnings.filterwarnings('ignore', message='.*SyntaxWarning: "is" with a literal*.')
+warnings.simplefilter(action='ignore', category=SyntaxWarning)
+
 def to_numeric(ser):
     """converts columns to small numeric dtypes when possible"""
     dt = str(ser.dtype)
@@ -31,7 +32,7 @@ def prep(X, mode='lower', fix_names=True):
     elif isinstance(X, str):
         return getattr(X.strip(), mode)()
     elif isinstance(X, (list, tuple, set, pd.Index)):
-        return t((prep(x, mode) for x in X))
+        return type(X)((prep(x, mode) for x in X))
     elif isinstance(X, dict):
         return dict(zip(*prep(listify(X), mode)))
     elif isinstance(X, np.ndarray):
