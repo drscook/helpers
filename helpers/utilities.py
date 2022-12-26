@@ -1,18 +1,53 @@
 from .common_imports import *
 
+def to_numeric(ser):
+    """converts columns to small numeric dtypes when possible"""
+    dt = str(ser.dtype)
+    if  dt in ['geometry', 'timestamp'] or dt[0].isupper():
+        return ser
+    else:
+        return pd.to_numeric(ser, errors='ignore', downcast='integer')  # cast to numeric datatypes where possible
+
 def listify(X):
     """Turns almost anything into a list"""
-    if isinstance(X, list):
-        return X
-    elif (X is None) or (X is np.nan) or (X==''):
+    t = type(X)
+    if X in [None, np.nan, '']:
         return []
-    elif isinstance(X, str):
-        return [X]
+    elif t in [list, tuple, set, pd.Index]:
+        return list(X)
+    elif t in [dict]:
+        return [list(X.keys()), list(X.values())]
+    elif t in [np.ndarray]:
+        return X.tolist()
+    elif t in [pd.Series, pd.DataFrame]:
+        return X.values.tolist()
     else:
-        try:
-            return list(X)
-        except:
-            return [X]
+        return [X]
+
+def prep(X, mode='lower', fix_names=True):
+    modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper']
+    assert mode in modes, f'mode must one of {modes} ... got {mode}'
+    t = type(X)
+    if X in [None, np.nan, '']:
+        return None
+    elif t in [str]:
+        return getattr(X.strip(), mode)()
+    elif t in [list, tuple, set, pd.Index]:
+        return t((prep(x, mode) for x in X))
+    elif t in [dict]:
+        return dict(zip(*prep(listify(X), mode)))
+    elif t in [np.ndarray]:
+        return np.array( prep(listify(X), mode))
+    elif t in [pd.DataFrame]:
+        idx = len(X.index.names)
+        X = X.reset_index()
+        if fix_names:
+            X.columns = prep(X.columns, mode)
+        return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
+    elif t in [pd.Series]:
+        return prep(X.to_frame(), mode).squeeze()
+    else:
+        return X
 
 def cartesian(D):
     D = {key: listify(val) for key, val in D.items()}
@@ -44,13 +79,6 @@ def ljust(msg, width, fillchar='0'):
     else:
         return str(msg).ljust(width, fillchar)
 
-def lower(msg):
-    try:
-        msg.lower()
-    
-    if isinstance(msg, str):
-        return msg.lower()
-
 def replace(msg, repls):
     for pats, repl in repls.items():
         for pat in listify(pats):
@@ -73,22 +101,6 @@ def make_select(cols, indents=1, sep=',\n', tbl=None):
         cols = [f'{tbl}.{x}' for x in cols]
     qry = join(cols, sep)
     return subquery(qry, indents)
-
-def to_numeric(ser):
-    """converts columns to small numeric dtypes when possible"""
-    dt = str(ser.dtype)
-    if  dt in ['geometry', 'timestamp'] or dt[0].isupper():
-        return ser
-    else:
-        return pd.to_numeric(ser, errors='ignore', downcast='integer')  # cast to numeric datatypes where possible
-
-def prep(df, fix_names=True):
-    """prep dataframes"""
-    idx = len(df.index.names)
-    df = df.reset_index()
-    if fix_names:
-        df.columns = [c.strip().lower() for c in df.columns]
-    return df.apply(to_numeric).convert_dtypes().set_index(df.columns[:idx].tolist())
 
 def transform_labeled(trans, df):
     """apply scikit-learn tranformation and return dataframe with appropriate column names and index"""
