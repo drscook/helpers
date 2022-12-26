@@ -1,12 +1,7 @@
 from .common_imports import *
-warnings.filterwarnings('ignore', message='.*ShapelyDeprecationWarning.*')
-warnings.simplefilter(action='ignore', category=FutureWarning)
-CRS = {
-    'census'  : 'EPSG:4269'  , # degrees - used by Census
-    'bigquery': 'EPSG:4326'  , # WSG84 - used by Bigquery
-    'area'    : 'ESRI:102003', # meters
-    'length'  : 'ESRI:102005', # meters
-}
+# warnings.filterwarnings('ignore', message='.*ShapelyDeprecationWarning.*')
+# warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 def listify(X):
     """Turns almost anything into a list"""
