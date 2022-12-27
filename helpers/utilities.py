@@ -23,13 +23,15 @@ def listify(X):
     else:
         return [X]
 
-def prep(X, mode='lower', fix_names=True):
-    modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper']
+def prep(X, mode='lower'):
+    modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper', None, False]
     assert mode in modes, f'mode must one of {modes} ... got {mode}'
     if X is None or X is np.nan:
         return None
     elif isinstance(X, str):
-        return getattr(X.strip(), mode)()
+        if mode:
+            X = getattr(X, mode)()
+        return X.strip()
     elif isinstance(X, (list, tuple, set, pd.Index)):
         return type(X)((prep(x, mode) for x in X))
     elif isinstance(X, dict):
@@ -39,8 +41,7 @@ def prep(X, mode='lower', fix_names=True):
     elif isinstance(X, pd.DataFrame):
         idx = len(X.index.names)
         X = X.reset_index()
-        if fix_names:
-            X.columns = prep(X.columns, mode)
+        X.columns = prep(X.columns, mode)
         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), mode).squeeze()
