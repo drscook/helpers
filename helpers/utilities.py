@@ -66,6 +66,14 @@ def jsonify(file, obj=None):
         with open(fn, 'r') as infile:
             return json.load(infile)
 
+def unzipper(file):
+    file = pathlib.Path(file)
+    targ = file.with_suffix('')
+    os.system(f'unzip -u -qq -n {file} -d {targ}')
+    if targ.is_dir():
+        for f in targ.iterdir():
+            unzipper(f)
+
 def rjust(msg, width, fillchar='0'):
     if isinstance(msg, pd.Series):
         return msg.astype(str).str.rjust(width, fillchar)
