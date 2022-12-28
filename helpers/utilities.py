@@ -18,8 +18,10 @@ def listify(X):
         return [list(X.keys()), list(X.values())]
     elif isinstance(X, np.ndarray):
         return X.tolist()
-    elif isinstance(X, (pd.Series, pd.DataFrame)):
+    elif isinstance(X, pd.DataFrame):
         return X.values.tolist()
+    elif isinstance(X, pd.Series):
+        return X.tolist()
     else:
         return [X]
 
