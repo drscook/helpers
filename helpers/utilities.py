@@ -95,7 +95,10 @@ def ljust(msg, width, fillchar='0'):
 def replace(msg, repls):
     for pats, repl in repls.items():
         for pat in listify(pats):
-            msg = msg.replace(pat, repl)
+            try:
+                msg = msg.str.replace(pat, repl)
+            except AttributeError:
+                msg = msg.replace(pat, repl)
     return msg
 
 def join(parts, sep=', '):
