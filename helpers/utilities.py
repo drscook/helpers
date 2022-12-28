@@ -201,7 +201,7 @@ class BigQuery():
           df = prep(res.to_dataframe())
           if 'geometry' in df.columns:
                 import geopandas as gpd
-                geo = gpd.GeoSeries.from_wkt(df['geometry'], crs=CRS['bigquery'])
+                geo = gpd.GeoSeries.from_wkt(df['geometry'].astype(str), crs=CRS['bigquery'])
                 df = gpd.GeoDataFrame(df, geometry=geo)
         return df
 
