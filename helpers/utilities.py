@@ -244,28 +244,28 @@ create table {tbl} as (
 
 @dataclasses.dataclass
 class Github():
-    repo_url  : str
+    url  : str
     root_path : str
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
     token: str = ''
 
     def __post_init__(self):
+        self.owner, self.name = self.url.split('/')
         os.system(f'git config --global user.email {self.email}')
         os.system(f'git config --global user.name {self.user}')
         if self.token:
             # let's us push changes to repo
-            self.url = f'https://{self.token}@github.com/{self.user}/{self.repo_url}'
+            self.url = f'https://{self.token}@github.com/{self.url}'
         else:
             # read-only access
-            self.url = f'https://github.com/{self.user}/{self.repo}.git'
-            self.url = f'https://github.com/{self.user}/{self.repo}.git'
-        self.path = self.root_path / self.repo
+            self.url = f'https://github.com/{self.url}.git'
+        self.path = self.root_path / self.name
 
     def sync(self, msg='changes'):
         cwd = os.getcwd()
-        self.root.mkdir(exist_ok=True, parents=True)
-        os.chdir(self.root)
+        self.root_path.mkdir(exist_ok=True, parents=True)
+        os.chdir(self.root_path)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
             os.system(f'git remote set-url origin {self.url}')
