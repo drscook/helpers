@@ -1,6 +1,6 @@
 import os, sys, pathlib, shutils, warnings, time, datetime, json, dataclasses, itertools as it
 import numpy as np, pandas as pd, matplotlib.pyplot as plt
-from codetiming import Timer as Timer
+from codetiming import Timer as Timer # https://realpython.com/python-timer/
 
 ellipsis = ' ... '
 CRS = {
