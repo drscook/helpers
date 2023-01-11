@@ -174,7 +174,7 @@ class Github():
 def mount_drive(mount_path='/content/drive'):
     import google.colab
     mount_path = pathlib.Path(mount_path)
-    google.colab.drive.mount(str(root_path))
+    google.colab.drive.mount(str(mount_path))
     return mount_path / 'MyDrive'
             
 def clone_repo(url, gitcreds_file='gitcreds.json', mount_path='/content/drive'):
