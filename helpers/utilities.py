@@ -62,6 +62,7 @@ def cartesian(dct):
 
 def mkdir(path, overwrite=False, exist_ok=True, parents=True):
     """Make dir, overwriting existing if desired"""
+    path = pathlib.Path(path)
     if overwrite:
         shutil.rmtree(path, ignore_errors=True)
     path.mkdir(exist_ok=exist_ok, parents=parents)
