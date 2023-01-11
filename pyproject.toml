@@ -7,5 +7,6 @@ allow-direct-references = true
 
 [project]
 name = "helpers"
+version = "1.0.0"
 description = "Commonly used helpers"
 dependencies = ['codetiming', 'jupyter-autotime', 'shutils', 'numpy', 'pandas', 'matplotlib']
