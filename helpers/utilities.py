@@ -255,7 +255,7 @@ class Github():
         os.system(f'git config --global user.email {self.email}')
         os.system(f'git config --global user.name {self.user}')
         if self.token:
-            # let's us push changes to repo
+            # read & write access
             self.url = f'https://{self.token}@github.com/{self.url}'
         else:
             # read-only access
