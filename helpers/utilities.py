@@ -130,6 +130,11 @@ def transform_labeled(trans, df):
 def decade(year):
     return int(year) // 10 * 10
 
+def mount_drive(mount_path='/content/drive'):
+    import google.colab
+    mount_path = pathlib.Path(mount_path)
+    google.colab.drive.mount(str(mount_path))
+    return mount_path / 'MyDrive'
 
 ################################################################################
 ### Interact With Github Repos ###
@@ -171,13 +176,7 @@ class Github():
                 print('you might not have push priveleges to this repo')
         os.chdir(cwd)
 
-def mount_drive(mount_path='/content/drive'):
-    import google.colab
-    mount_path = pathlib.Path(mount_path)
-    google.colab.drive.mount(str(mount_path))
-    return mount_path / 'MyDrive'
-            
-def clone_repo(url, gitcreds_file='gitcreds.json', mount_path='/content/drive'):
+def clone_repo(url, gitcreds_file):
     root_path = mount_drive(mount_path)
     gitcreds = jsonify(root_path / gitcreds_file)
     repo = Github(url, root_path, **gitcreds)
