@@ -7,9 +7,5 @@ allow-direct-references = true
 
 [project]
 name = "helpers"
-dynamic = ["version"]
 description = "Commonly used helpers"
-dependencies = ['codetiming', 'shutils', 'numpy', 'pandas', 'matplotlib', 'jupyter-autotime']
-
-[tool.hatch.version]
-path = "helpers/__about__.py"
+dependencies = ['codetiming', 'jupyter-autotime', 'shutils', 'numpy', 'pandas', 'matplotlib']
