@@ -1,5 +1,5 @@
-import os, sys, pathlib, shutils, warnings, time, datetime, json, dataclasses
-import itertools as it, numpy as np, pandas as pd, matplotlib.pyplot as plt
+import os, sys, pathlib, shutils, warnings, time, datetime, json, dataclasses, itertools as it
+import numpy as np, pandas as pd, matplotlib.pyplot as plt
 from codetiming import Timer as Timer
 
 ellipsis = ' ... '
