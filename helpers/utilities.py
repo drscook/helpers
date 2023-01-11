@@ -285,9 +285,9 @@ def mount_drive(mount_path='/content/drive'):
     google.colab.drive.mount(str(root_path))
     return mount_path / 'MyDrive'
             
-def clone_repo(repo_url, git_file='git_creds.json', mount_path='/content/drive'):
+def clone_repo(url, gitcreds_file='gitcreds.json', mount_path='/content/drive'):
     root_path = mount_drive(mount_path)
-    git_creds = jsonify(root_path / git_file)
-    repo = Github(repo_url, root_path, **git_creds)
+    gitcreds = jsonify(root_path / gitcreds_file)
+    repo = Github(url, root_path, **git_creds)
     repo.sync()
     return repo
