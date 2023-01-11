@@ -60,25 +60,13 @@ def mkdir(path, overwrite=False):
     path.mkdir(exist_ok=True, parents=True)
 
 def jsonify(file, obj=None):
-    fn = str(file).split('.')[0] + '.json'
+    fn = pathlib.Path(file).with_suffix('.json')
     if obj:
         with open(fn, 'w') as outfile:
             json.dump(obj, outfile, indent=4)
     else:
         with open(fn, 'r') as infile:
             return json.load(infile)
-
-def unzipper(file):
-    os.system(f'unzip -u -qq -n {file} -d {file.parent}')
-    # file = pathlib.Path(file)
-    # targ = file.with_suffix('')
-    # os.system(f'unzip -u -qq -n {file} -d {targ}')
-    # if targ.is_dir():
-    #     for f in targ.iterdir():
-    #         unzipper(f)
-    #     return targ
-    # else:
-    #     return None
 
 def rjust(msg, width, fillchar='0'):
     if isinstance(msg, pd.Series):
