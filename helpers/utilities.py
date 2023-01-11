@@ -244,8 +244,8 @@ create table {tbl} as (
 
 @dataclasses.dataclass
 class Github():
-    repo : str = 'helpers'
-    root : str = '/content/'
+    repo_url  : str
+    root_path : str
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
     token: str = ''
@@ -254,10 +254,13 @@ class Github():
         os.system(f'git config --global user.email {self.email}')
         os.system(f'git config --global user.name {self.user}')
         if self.token:
-            self.url = f'https://{self.token}@github.com/{self.user}/{self.repo}'
+            # let's us push changes to repo
+            self.url = f'https://{self.token}@github.com/{self.user}/{self.repo_url}'
         else:
+            # read-only access
             self.url = f'https://github.com/{self.user}/{self.repo}.git'
-        self.path = self.root / self.repo
+            self.url = f'https://github.com/{self.user}/{self.repo}.git'
+        self.path = self.root_path / self.repo
 
     def sync(self, msg='changes'):
         cwd = os.getcwd()
