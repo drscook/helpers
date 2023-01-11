@@ -62,7 +62,7 @@ def mkdir(path, overwrite=False):
         shutil.rmtree(path, ignore_errors=True)
     path.mkdir(exist_ok=True, parents=True)
 
-def json(file, dct=None):
+def jsonify(file, dct=None):
     """Writes dct to file if dct is not None; else, reads file"""
     fn = pathlib.Path(file).with_suffix('.json')
     if obj:
