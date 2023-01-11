@@ -65,7 +65,7 @@ def mkdir(path, overwrite=False):
 def jsonify(file, dct=None):
     """Writes dct to file if dct is not None; else, reads file"""
     fn = pathlib.Path(file).with_suffix('.json')
-    if obj:
+    if dct:
         with open(fn, 'w') as outfile:
             json.dump(dct, outfile, indent=4)
     else:
