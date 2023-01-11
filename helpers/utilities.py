@@ -26,6 +26,7 @@ def listify(X):
         return [X]
 
 def prep(X, mode='lower'):
+    """Common data preparation such as standardizing capitalization"""
     modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper', None, False]
     assert mode in modes, f'mode must one of {modes} ... got {mode}'
     if X is None or X is np.nan:
@@ -39,7 +40,7 @@ def prep(X, mode='lower'):
     elif isinstance(X, dict):
         return dict(zip(*prep(listify(X), mode)))
     elif isinstance(X, np.ndarray):
-        return np.array( prep(listify(X), mode))
+        return np.array(prep(listify(X), mode))
     elif isinstance(X, pd.DataFrame):
         idx = len(X.index.names)
         X = X.reset_index()
@@ -50,42 +51,53 @@ def prep(X, mode='lower'):
     else:
         return X
 
-def cartesian(D):
-    D = {key: listify(val) for key, val in D.items()}
+def cartesian(dct):
+    """Creates the Cartesian product of a dictionary with list-like values"""
+    D = {key: listify(val) for key, val in dct.items()}
     return [dict(zip(D.keys(), x)) for x in it.product(*D.values())]
 
 def mkdir(path, overwrite=False):
+    """Make dir, overwriting existing if desired"""
     if overwrite:
         shutil.rmtree(path, ignore_errors=True)
     path.mkdir(exist_ok=True, parents=True)
 
-def jsonify(file, obj=None):
+def json(file, dct=None):
+    """Writes dct to file if dct is not None; else, reads file"""
     fn = pathlib.Path(file).with_suffix('.json')
     if obj:
         with open(fn, 'w') as outfile:
-            json.dump(obj, outfile, indent=4)
+            json.dump(dct, outfile, indent=4)
     else:
         with open(fn, 'r') as infile:
             return json.load(infile)
 
 def rjust(msg, width, fillchar='0'):
+    """Right justifies strings.  Can apply to pandas Series"""
     if isinstance(msg, pd.Series):
         return msg.astype(str).str.rjust(width, fillchar)
     else:
         return str(msg).rjust(width, fillchar)
 
 def ljust(msg, width, fillchar='0'):
+    """Left justifies strings.  Can apply to pandas Series"""
     if isinstance(msg, pd.Series):
         return msg.astype(str).str.ljust(width, fillchar)
     else:
         return str(msg).ljust(width, fillchar)
 
 def replace(msg, repls):
+    """
+    Iterative string replacement on msg, which can either be a string or panda Series of strings
+    repl is a dictionary with where each key can be a single pattern or tuple of pattens to be replaced with the value
+    """
     for pats, repl in repls.items():
         for pat in listify(pats):
             try:
+                # If msg is a pandas series
                 msg = msg.str.replace(pat, repl)
             except AttributeError:
+                # If msg is a single string
                 msg = msg.replace(pat, repl)
     return msg
 
