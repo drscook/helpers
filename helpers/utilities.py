@@ -278,3 +278,16 @@ class Github():
             if 'Your branch is ahead of' in res:
                 print('you might not have push priveleges to this repo')
         os.chdir(cwd)
+
+def mount_drive():
+    import google.colab
+    root_path = pathlib.Path('/content/drive')
+    google.colab.drive.mount(str(root_path))
+    return root_path / 'MyDrive'
+            
+def clone_repo(repo_url, git_file='git_creds.json'):
+    root_path = mount_drive()
+    git_creds = jsonify(root_path / git_file)
+    repo = Github(repo_url, root_path, **git_creds)
+    repo.sync()
+    return repo
