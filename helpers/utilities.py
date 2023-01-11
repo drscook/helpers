@@ -244,7 +244,7 @@ create table {tbl} as (
 
 @dataclasses.dataclass
 class Github():
-    repo : str = 'config'
+    repo : str = 'helpers'
     root : str = '/content/'
     user : str = 'drscook'
     email: str = 'scook@tarleton.edu'
