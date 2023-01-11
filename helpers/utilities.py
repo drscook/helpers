@@ -1,5 +1,9 @@
 from .common_imports import *
 
+################################################################################
+### Convennient Helper Functions ###
+################################################################################
+
 def to_numeric(ser):
     """converts columns to small numeric dtypes when possible"""
     dt = str(ser.dtype)
@@ -56,11 +60,11 @@ def cartesian(dct):
     D = {key: listify(val) for key, val in dct.items()}
     return [dict(zip(D.keys(), x)) for x in it.product(*D.values())]
 
-def mkdir(path, overwrite=False):
+def mkdir(path, overwrite=False, exist_ok=True, parents=True):
     """Make dir, overwriting existing if desired"""
     if overwrite:
         shutil.rmtree(path, ignore_errors=True)
-    path.mkdir(exist_ok=True, parents=True)
+    path.mkdir(exist_ok=exist_ok, parents=parents)
 
 def jsonify(file, dct=None):
     """Writes dct to file if dct is not None; else, reads file"""
@@ -125,8 +129,71 @@ def transform_labeled(trans, df):
 def decade(year):
     return int(year) // 10 * 10
 
+
+################################################################################
+### Interact With Github Repos ###
+################################################################################
+@dataclasses.dataclass
+class Github():
+    url  : str
+    root_path : str
+    user : str = 'drscook'
+    email: str = 'scook@tarleton.edu'
+    token: str = ''
+
+    def __post_init__(self):
+        self.owner, self.name = self.url.split('/')
+        os.system(f'git config --global user.email {self.email}')
+        os.system(f'git config --global user.name {self.user}')
+        if self.token:
+            # read & write access
+            self.url = f'https://{self.token}@github.com/{self.url}'
+        else:
+            # read-only access
+            self.url = f'https://github.com/{self.url}.git'
+        self.path = self.root_path / self.name
+
+    def sync(self, msg='changes'):
+        cwd = os.getcwd()
+        mkdir(self.root_path)
+        os.chdir(self.root_path)
+        if os.system(f'git clone {self.url}') != 0:
+            os.chdir(self.path)
+            os.system(f'git remote set-url origin {self.url}')
+            os.system(f'git pull')
+            os.system(f'git add .')
+            os.system(f'git commit -m {msg}')
+            os.system(f'git push')
+            res = os.popen(f'git commit -m {msg}').read()
+            print(res)
+            if 'Your branch is ahead of' in res:
+                print('you might not have push priveleges to this repo')
+        os.chdir(cwd)
+
+def mount_drive(mount_path='/content/drive'):
+    import google.colab
+    mount_path = pathlib.Path(mount_path)
+    google.colab.drive.mount(str(root_path))
+    return mount_path / 'MyDrive'
+            
+def clone_repo(url, gitcreds_file='gitcreds.json', mount_path='/content/drive'):
+    root_path = mount_drive(mount_path)
+    gitcreds = jsonify(root_path / gitcreds_file)
+    repo = Github(url, root_path, **git_creds)
+    repo.sync()
+    return repo
+
+
+################################################################################
+### Interact With BigQuery ###
+################################################################################
 @dataclasses.dataclass
 class BigQuery():
+    """
+    ds = dataset
+    tbl = table
+    qry = query
+    """
     project_id: str
 
     def __post_init__(self):
@@ -240,54 +307,3 @@ create table {tbl} as (
         self.qry_to_tbl(qry, targ)
         if delete:
             [self.del_tbl(t) for t in src]
-
-
-@dataclasses.dataclass
-class Github():
-    url  : str
-    root_path : str
-    user : str = 'drscook'
-    email: str = 'scook@tarleton.edu'
-    token: str = ''
-
-    def __post_init__(self):
-        self.owner, self.name = self.url.split('/')
-        os.system(f'git config --global user.email {self.email}')
-        os.system(f'git config --global user.name {self.user}')
-        if self.token:
-            # read & write access
-            self.url = f'https://{self.token}@github.com/{self.url}'
-        else:
-            # read-only access
-            self.url = f'https://github.com/{self.url}.git'
-        self.path = self.root_path / self.name
-
-    def sync(self, msg='changes'):
-        cwd = os.getcwd()
-        self.root_path.mkdir(exist_ok=True, parents=True)
-        os.chdir(self.root_path)
-        if os.system(f'git clone {self.url}') != 0:
-            os.chdir(self.path)
-            os.system(f'git remote set-url origin {self.url}')
-            os.system(f'git pull')
-            os.system(f'git add .')
-            os.system(f'git commit -m {msg}')
-            os.system(f'git push')
-            res = os.popen(f'git commit -m {msg}').read()
-            print(res)
-            if 'Your branch is ahead of' in res:
-                print('you might not have push priveleges to this repo')
-        os.chdir(cwd)
-
-def mount_drive(mount_path='/content/drive'):
-    import google.colab
-    mount_path = pathlib.Path(mount_path)
-    google.colab.drive.mount(str(root_path))
-    return mount_path / 'MyDrive'
-            
-def clone_repo(url, gitcreds_file='gitcreds.json', mount_path='/content/drive'):
-    root_path = mount_drive(mount_path)
-    gitcreds = jsonify(root_path / gitcreds_file)
-    repo = Github(url, root_path, **git_creds)
-    repo.sync()
-    return repo
