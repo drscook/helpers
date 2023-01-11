@@ -279,14 +279,14 @@ class Github():
                 print('you might not have push priveleges to this repo')
         os.chdir(cwd)
 
-def mount_drive():
+def mount_drive(mount_path='/content/drive'):
     import google.colab
-    root_path = pathlib.Path('/content/drive')
+    mount_path = pathlib.Path(mount_path)
     google.colab.drive.mount(str(root_path))
-    return root_path / 'MyDrive'
+    return mount_path / 'MyDrive'
             
-def clone_repo(repo_url, git_file='git_creds.json'):
-    root_path = mount_drive()
+def clone_repo(repo_url, git_file='git_creds.json', mount_path='/content/drive'):
+    root_path = mount_drive(mount_path)
     git_creds = jsonify(root_path / git_file)
     repo = Github(repo_url, root_path, **git_creds)
     repo.sync()
