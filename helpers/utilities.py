@@ -180,7 +180,7 @@ def mount_drive(mount_path='/content/drive'):
 def clone_repo(url, gitcreds_file='gitcreds.json', mount_path='/content/drive'):
     root_path = mount_drive(mount_path)
     gitcreds = jsonify(root_path / gitcreds_file)
-    repo = Github(url, root_path, **git_creds)
+    repo = Github(url, root_path, **gitcreds)
     repo.sync()
     return repo
 
