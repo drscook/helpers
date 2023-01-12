@@ -287,6 +287,7 @@ class Github():
         cwd = os.getcwd()
         mkdir(self.path.parent)
         os.chdir(self.path.parent)
+        
         os.system(f'git clone {self.url}')
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
@@ -309,5 +310,5 @@ def clone_repo(url, path, gitcreds_file='gitcreds.json'):
     except:
         print(f'{gitcreds_file} missing or invalid - using default Github credentials')
         repo = Github(url, path)
-    repo.sync()
+#     repo.sync()
     return repo
