@@ -287,8 +287,6 @@ class Github():
         cwd = os.getcwd()
         mkdir(self.path.parent)
         os.chdir(self.path.parent)
-        
-        os.system(f'git clone {self.url}')
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
             os.system(f'git remote set-url origin {self.url}')
