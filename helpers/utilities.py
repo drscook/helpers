@@ -157,7 +157,7 @@ class Github():
         else:
             # read-only access
             self.url = f'https://github.com/{self.url}.git'
-        self.path = self.root_path / self.name
+        self.path = pathlib.Path(self.root_path) / self.name
 
     def sync(self, msg='changes'):
         cwd = os.getcwd()
@@ -176,10 +176,9 @@ class Github():
                 print('you might not have push priveleges to this repo')
         os.chdir(cwd)
 
-def clone_repo(url, gitcreds_file):
-    root_path = mount_drive(mount_path)
-    gitcreds = jsonify(root_path / gitcreds_file)
-    repo = Github(url, root_path, **gitcreds)
+def clone_repo(url, path, gitcreds_file='gitcreds.json'):
+    gitcreds = jsonify(pathlib.Path(path) / gitcreds_file)
+    repo = Github(url, path, **gitcreds)
     repo.sync()
     return repo
 
