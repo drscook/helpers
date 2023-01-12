@@ -136,57 +136,6 @@ def mount_drive(path='/content/drive'):
     google.colab.drive.mount(str(path))
     return path / 'MyDrive'
 
-################################################################################
-### Interact With Github Repos ###
-################################################################################
-@dataclasses.dataclass
-class Github():
-    url  : str
-    root_path : str
-    user : str = 'drscook'
-    email: str = 'scook@tarleton.edu'
-    token: str = ''
-
-    def __post_init__(self):
-        self.owner, self.name = self.url.split('/')
-        os.system(f'git config --global user.email {self.email}')
-        os.system(f'git config --global user.name {self.user}')
-        if self.token:
-            # read & write access
-            self.url = f'https://{self.token}@github.com/{self.url}'
-        else:
-            # read-only access
-            self.url = f'https://github.com/{self.url}.git'
-        self.path = pathlib.Path(self.root_path) / self.name
-
-    def sync(self, msg='changes'):
-        cwd = os.getcwd()
-        mkdir(self.path.parent)
-        os.chdir(self.path.parent)
-        if os.system(f'git clone {self.url}') != 0:
-            os.chdir(self.path)
-            os.system(f'git remote set-url origin {self.url}')
-            os.system(f'git pull')
-            os.system(f'git add .')
-            os.system(f'git commit -m {msg}')
-            os.system(f'git push')
-            res = os.popen(f'git commit -m {msg}').read()
-            print(res)
-            if 'Your branch is ahead of' in res:
-                print('you might not have push priveleges to this repo')
-        os.chdir(cwd)
-
-def clone_repo(url, path, gitcreds_file='gitcreds.json'):
-    gitcreds_file = pathlib.Path(path) / gitcreds_file
-    try:
-        gitcreds = jsonify(gitcreds_file)
-        repo = Github(url, path, **gitcreds)
-    except:
-        print(f'{gitcreds_file} missing or invalid - using default Github credentials')
-        repo = Github(url, path)
-    repo.sync()
-    return repo
-
 
 ################################################################################
 ### Interact With BigQuery ###
@@ -310,3 +259,54 @@ create table {tbl} as (
         self.qry_to_tbl(qry, targ)
         if delete:
             [self.del_tbl(t) for t in src]
+
+################################################################################
+### Interact With Github Repos ###
+################################################################################
+@dataclasses.dataclass
+class Github():
+    url  : str
+    root_path : str
+    user : str = 'drscook'
+    email: str = 'scook@tarleton.edu'
+    token: str = ''
+
+    def __post_init__(self):
+        self.owner, self.name = self.url.split('/')
+        os.system(f'git config --global user.email {self.email}')
+        os.system(f'git config --global user.name {self.user}')
+        if self.token:
+            # read & write access
+            self.url = f'https://{self.token}@github.com/{self.url}'
+        else:
+            # read-only access
+            self.url = f'https://github.com/{self.url}.git'
+        self.path = pathlib.Path(self.root_path) / self.name
+
+    def sync(self, msg='changes'):
+        cwd = os.getcwd()
+        mkdir(self.path.parent)
+        os.chdir(self.path.parent)
+        if os.system(f'git clone {self.url}') != 0:
+            os.chdir(self.path)
+            os.system(f'git remote set-url origin {self.url}')
+            os.system(f'git pull')
+            os.system(f'git add .')
+            os.system(f'git commit -m {msg}')
+            os.system(f'git push')
+            res = os.popen(f'git commit -m {msg}').read()
+            print(res)
+            if 'Your branch is ahead of' in res:
+                print('you might not have push priveleges to this repo')
+        os.chdir(cwd)
+
+def clone_repo(url, path, gitcreds_file='gitcreds.json'):
+    gitcreds_file = pathlib.Path(path) / gitcreds_file
+    try:
+        gitcreds = jsonify(gitcreds_file)
+        repo = Github(url, path, **gitcreds)
+    except:
+        print(f'{gitcreds_file} missing or invalid - using default Github credentials')
+        repo = Github(url, path)
+    repo.sync()
+    return repo
