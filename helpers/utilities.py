@@ -177,9 +177,13 @@ class Github():
         os.chdir(cwd)
 
 def clone_repo(url, path, gitcreds_file='gitcreds.json'):
-    path = pathlib.Path(path)
-    gitcreds = jsonify(path / gitcreds_file)
-    repo = Github(url, path, **gitcreds)
+    gitcreds_file = pathlib.Path(path) / gitcreds_file
+    try:
+        gitcreds = jsonify(gitcreds_file)
+        repo = Github(url, path, **gitcreds)
+    except:
+        print(f'{gitcreds_file} missing or invalid - using default Github credentials')
+        repo = Github(url, path)
     repo.sync()
     return repo
 
