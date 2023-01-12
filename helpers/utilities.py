@@ -130,11 +130,11 @@ def transform_labeled(trans, df):
 def decade(year):
     return int(year) // 10 * 10
 
-def mount_drive(mount_path='/content/drive'):
+def mount_drive(path='/content/drive'):
     import google.colab
-    mount_path = pathlib.Path(mount_path)
-    google.colab.drive.mount(str(mount_path))
-    return mount_path / 'MyDrive'
+    path = pathlib.Path(path)
+    google.colab.drive.mount(str(path))
+    return path / 'MyDrive'
 
 ################################################################################
 ### Interact With Github Repos ###
@@ -161,8 +161,8 @@ class Github():
 
     def sync(self, msg='changes'):
         cwd = os.getcwd()
-        mkdir(self.root_path)
-        os.chdir(self.root_path)
+        mkdir(self.path.parent)
+        os.chdir(self.path.parent)
         if os.system(f'git clone {self.url}') != 0:
             os.chdir(self.path)
             os.system(f'git remote set-url origin {self.url}')
@@ -177,7 +177,8 @@ class Github():
         os.chdir(cwd)
 
 def clone_repo(url, path, gitcreds_file='gitcreds.json'):
-    gitcreds = jsonify(pathlib.Path(path) / gitcreds_file)
+    path = pathlib.Path(path)
+    gitcreds = jsonify(path / gitcreds_file)
     repo = Github(url, path, **gitcreds)
     repo.sync()
     return repo
