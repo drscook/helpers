@@ -194,8 +194,7 @@ class BigQuery():
     tbl = table
     qry = query
     """
-    project_id: str
-
+    project_id: str = 'tarletondatascience2022'
     def __post_init__(self):
         from google.colab import auth
         from google.cloud.bigquery import Client
