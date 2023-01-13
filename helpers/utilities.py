@@ -308,5 +308,6 @@ def clone_repo(url, path, gitcreds_file='gitcreds.json'):
     except:
         print(f'{gitcreds_file} missing or invalid - using default Github credentials')
         repo = Github(url, path)
-#     repo.sync()
+    repo.sync()
+    sys.path.insert(0, f'{path}/{repo.name}')
     return repo
