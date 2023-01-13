@@ -9,4 +9,3 @@ CRS = {
     'area'    : 'ESRI:102003', # meters
     'length'  : 'ESRI:102005', # meters
 }
-print('hi')
