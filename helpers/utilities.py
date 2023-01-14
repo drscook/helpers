@@ -130,6 +130,9 @@ def transform_labeled(trans, df):
 def decade(year):
     return int(year) // 10 * 10
 
+def unzipper(file):
+    os.system(f'unzip -u -qq -n {file} -d {file.parent}')
+
 def mount_drive(path='/content/drive'):
     import google.colab
     path = pathlib.Path(path)
