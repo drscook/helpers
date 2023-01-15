@@ -29,6 +29,9 @@ def listify(X):
     else:
         return [X]
 
+def setify(X):
+    return set(listify(X))
+    
 def prep(X, mode='lower'):
     """Common data preparation such as standardizing capitalization"""
     modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper', None, False]
