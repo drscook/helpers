@@ -80,6 +80,13 @@ def jsonify(file, dct=None):
         with open(fn, 'r') as infile:
             return json.load(infile)
 
+def findn(msg, pat, n=1):
+    k = msg.find(pat)
+    while n > 1:
+        k = msg.find(pat, k+1)
+        n -= 1
+    return k
+
 def rjust(msg, width, fillchar='0'):
     """Right justifies strings.  Can apply to pandas Series"""
     if isinstance(msg, pd.Series):
