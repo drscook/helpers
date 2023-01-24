@@ -34,7 +34,7 @@ def setify(X):
     
 def pprint(x):
     try:
-        display(pd.DataFrame(X))
+        display(pd.DataFrame(x))
     except:
         print(x)
     
