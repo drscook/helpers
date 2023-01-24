@@ -32,8 +32,11 @@ def listify(X):
 def setify(X):
     return set(listify(X))
     
-def pprint(X):
-    display(pd.DataFrame(X))
+def pprint(x):
+    try:
+        display(pd.DataFrame(X))
+    except:
+        print(x)
     
 def prep(X, mode='lower'):
     """Common data preparation such as standardizing capitalization"""
