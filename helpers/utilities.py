@@ -58,7 +58,8 @@ def prep(X, mode='lower'):
         idx = len(X.index.names)
         X = X.reset_index()
         X.columns = prep(X.columns, mode)
-        return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
+        return X.apply(to_numeric).set_index(X.columns[:idx].tolist())
+#         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), mode).squeeze()
     else:
