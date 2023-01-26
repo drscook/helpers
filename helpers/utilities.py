@@ -16,7 +16,7 @@ def listify(X):
     """Turns almost anything into a list"""
     if X is None or X is np.nan:
         return []
-    elif isinstance(X, (list, tuple, set, pd.Index)):
+    elif isinstance(X, (list, tuple, set, type({}.keys()), type({}.values()), pd.Index)):
         return list(X)
     elif isinstance(X, dict):
         return [list(X.keys()), list(X.values())]
