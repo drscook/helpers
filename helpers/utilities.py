@@ -132,7 +132,7 @@ def subquery(qry, indents=1):
     s = '\n' + indents * '    '
     return qry.strip(';\n ').replace('\n', s)  # strip leading/trailing whitespace and indent all but first line
 
-def make_select(cols, indents=1, sep=',\n', tbl=None):
+def select(cols, indents=1, sep=',\n', tbl=None):
     """ useful for select statements """
     cols = listify(cols)
     if tbl is not None:
