@@ -237,12 +237,12 @@ class BigQuery():
     def qry_to_df(self, qry):
         res = self.run_qry(qry)
         if res.total_rows > 0:
-          df = prep(res.to_dataframe())
+          res = prep(res.to_dataframe())
           if 'geometry' in df.columns:
                 import geopandas as gpd
-                geo = gpd.GeoSeries.from_wkt(df['geometry'].astype(str), crs=CRS['bigquery'])
-                df = gpd.GeoDataFrame(df, geometry=geo)
-        return df
+                geo = gpd.GeoSeries.from_wkt(res['geometry'].astype(str), crs=CRS['bigquery'])
+                res = gpd.GeoDataFrame(res, geometry=geo)
+        return res
 
     def qry_to_tbl(self, qry, tbl, overwrite=True):
         if not self.get_tbl(tbl, overwrite=overwrite):
