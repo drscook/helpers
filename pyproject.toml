@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "helpers"
 version = "1.0.0"
 description = "Commonly used helpers"
-dependencies = ['codetiming', 'jupyter-autotime', 'numpy', 'pandas', 'matplotlib']
+dependencies = ['codetiming', 'pretty_html_table', 'jupyter-autotime', 'numpy', 'pandas', 'matplotlib']
 
 [tool.hatch.metadata]
 allow-direct-references = true
