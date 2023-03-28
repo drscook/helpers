@@ -4,14 +4,6 @@ from .common_imports import *
 ### Convennient Helper Functions ###
 ################################################################################
 
-def to_numeric(ser):
-    """converts columns to small numeric dtypes when possible"""
-    dt = str(ser.dtype)
-    if  dt in ['geometry', 'timestamp'] or dt[0].isupper():
-        return ser
-    else:
-        return pd.to_numeric(ser, errors='ignore', downcast='integer')  # cast to numeric datatypes where possible
-
 def listify(X):
     """Turns almost anything into a list"""
     if X is None or X is np.nan:
@@ -32,38 +24,43 @@ def listify(X):
 def setify(X):
     return set(listify(X))
     
-def pprint(x):
+def to_numeric(ser):
+    dt = str(ser.dtype).lower()
+    if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
+        if 'object' in dt:
+            ser = ser.astype('string')
+        for _ in range(3):
+            # turn strings to numeric if possible & convert to new nullable dtypes
+            # repeat because further downcasting might be possible after conversion due to integer type nulls
+            ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric datatypes where possible
+    return ser.convert_dtypes()
+
+def prep(self, cap='casefold', squeeze=True):
+    df = pd.DataFrame(self)
+    k = len(df.index.names)
+    df = df.reset_index().apply(to_numeric)
+    f = {'casefold':lambda s:s.casefold(), 'lower':lambda s:s.lower(), 'upper':lambda s:s.upper(), 'capitalize':lambda s:s.capitalize(), 'title':lambda s:s.title(), None:lambda s:s}
+    df.columns = [None if x == 'index' else f[cap](x).strip() for x in df.columns]
+    df = df.set_index(df.columns[:k].tolist())
+    return df.squeeze() if squeeze else df
+pd.DataFrame.prep = prep
+pd.Series.prep = prep
+
+def html(self, color='red_dark', odd_bg_color='dark grey', padding='2px', text_align='center', file=None, show=True, **kwargs):
+    df = pd.DataFrame(self)
+    self.table = pretty_html_table.build_table(df, color=color, odd_bg_color=odd_bg_color, padding=padding, text_align=text_align, **kwargs)
     try:
-        display(pd.DataFrame(x))
+        with open(file, 'w') as f:
+            f.write(self.table)
+        print(f'HTML table written to {file}')
     except:
-        print(x)
-    
-def prep(X, mode='lower'):
-    """Common data preparation such as standardizing capitalization"""
-    modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper', None, False]
-    assert mode in modes, f'mode must one of {modes} ... got {mode}'
-    if X is None or X is np.nan:
-        return None
-    elif isinstance(X, str):
-        if mode:
-            X = getattr(X, mode)()
-        return X.strip()
-    elif isinstance(X, (list, tuple, set, pd.Index)):
-        return type(X)((prep(x, mode) for x in X))
-    elif isinstance(X, dict):
-        return dict(zip(*prep(listify(X), mode)))
-    elif isinstance(X, np.ndarray):
-        return np.array(prep(listify(X), mode))
-    elif isinstance(X, pd.DataFrame):
-        idx = len(X.index.names)
-        X = X.reset_index()
-        X.columns = prep(X.columns, mode)
-        return X.apply(to_numeric).set_index(X.columns[:idx].tolist())
-#         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
-    elif isinstance(X, pd.Series):
-        return prep(X.to_frame(), mode).squeeze()
-    else:
-        return X
+        pass
+    if show:
+        display(IPython.display.HTML(self.table))
+    return self.table
+pd.DataFrame.html = html
+pd.Series.html = html
+
 
 def cartesian(dct):
     """Creates the Cartesian product of a dictionary with list-like values"""
@@ -142,7 +139,7 @@ def select(cols, indents=1, sep=',\n', tbl=None):
 
 def transform_labeled(trans, df):
     """apply scikit-learn tranformation and return dataframe with appropriate column names and index"""
-    return prep(pd.DataFrame(trans.fit_transform(df), columns=trans.get_feature_names_out(), index=df.index))
+    return pd.DataFrame(trans.fit_transform(df), columns=trans.get_feature_names_out(), index=df.index).prep()
 
 def decade(year):
     return int(year) // 10 * 10
@@ -237,7 +234,7 @@ class BigQuery():
     def qry_to_df(self, qry):
         res = self.run_qry(qry)
         if res.total_rows > 0:
-          res = prep(res.to_dataframe())
+          res = res.to_dataframe().prep()
           if 'geometry' in res.columns:
                 import geopandas as gpd
                 geo = gpd.GeoSeries.from_wkt(res['geometry'].astype(str), crs=CRS['bigquery'])
