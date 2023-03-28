@@ -4,26 +4,6 @@ from .common_imports import *
 ### Convennient Helper Functions ###
 ################################################################################
 
-def listify(X):
-    """Turns almost anything into a list"""
-    if X is None or X is np.nan:
-        return []
-    elif isinstance(X, (list, tuple, set, type({}.keys()), type({}.values()), pd.Index)):
-        return list(X)
-    elif isinstance(X, dict):
-        return [list(X.keys()), list(X.values())]
-    elif isinstance(X, np.ndarray):
-        return X.tolist()
-    elif isinstance(X, pd.DataFrame):
-        return X.values.tolist()
-    elif isinstance(X, pd.Series):
-        return X.tolist()
-    else:
-        return [X]
-
-def setify(X):
-    return set(listify(X))
-    
 def to_numeric(ser):
     dt = str(ser.dtype).lower()
     if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
@@ -61,6 +41,25 @@ def html(self, color='red_dark', odd_bg_color='dark grey', padding='2px', text_a
 pd.DataFrame.html = html
 pd.Series.html = html
 
+def listify(X):
+    """Turns almost anything into a list"""
+    if X is None or X is np.nan:
+        return []
+    elif isinstance(X, (list, tuple, set, type({}.keys()), type({}.values()), pd.Index)):
+        return list(X)
+    elif isinstance(X, dict):
+        return [list(X.keys()), list(X.values())]
+    elif isinstance(X, np.ndarray):
+        return X.tolist()
+    elif isinstance(X, pd.DataFrame):
+        return X.values.tolist()
+    elif isinstance(X, pd.Series):
+        return X.tolist()
+    else:
+        return [X]
+
+def setify(X):
+    return set(listify(X))
 
 def cartesian(dct):
     """Creates the Cartesian product of a dictionary with list-like values"""
