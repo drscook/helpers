@@ -4,14 +4,6 @@ from .common_imports import *
 ### Convennient Helper Functions ###
 ################################################################################
 
-def to_numeric(ser):
-    """converts columns to small numeric dtypes when possible"""
-    dt = str(ser.dtype)
-    if  dt in ['geometry', 'timestamp'] or dt[0].isupper():
-        return ser
-    else:
-        return pd.to_numeric(ser, errors='ignore', downcast='integer')  # cast to numeric datatypes where possible
-
 def listify(X):
     """Turns almost anything into a list"""
     if X is None or X is np.nan:
@@ -32,38 +24,61 @@ def listify(X):
 def setify(X):
     return set(listify(X))
     
+def to_numeric(ser):
+    dt = str(ser.dtype).lower()
+    if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
+        if 'object' in dt:
+            ser = ser.astype('string')
+        for _ in range(3):
+            # turn strings to numeric if possible & convert to new nullable dtypes
+            # repeat because further downcasting might be possible after conversion due to integer type nulls
+            ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric datatypes where possible
+    return ser.convert_dtypes()
+
+def prep(X, cap='casefold'):
+    """Common data preparation such as standardizing capitalization"""
+    caps = ['casefold', 'lower', 'upper', 'capitalize', 'swapcase', 'title', None, False]
+    assert cap in caps, f'Unknown capitalization {cap} ... must one of {caps}'
+    if X is None or X is np.nan:
+        return None
+    elif isinstance(X, str):
+        if cap:
+            X = getattr(X, cap)()
+        return X.strip()
+    elif isinstance(X, (list, tuple, set, pd.Index)):
+        return type(X)((prep(x, cap) for x in X))
+    elif isinstance(X, dict):
+        return dict(zip(*prep(listify(X), cap)))
+    elif isinstance(X, np.ndarray):
+        return np.array(prep(listify(X), cap))
+    elif isinstance(X, pd.DataFrame):
+        k = len(df.index.names)
+        X = X.reset_index()
+        X.columns = [None if x == 'index' else prep(x, cap) for x in X.columns]
+        return X.apply(to_numeric).set_index(X.columns[:k].tolist())
+    elif isinstance(X, pd.Series):
+        return prep(X.to_frame(), cap).squeeze()
+    else:
+        return X
+
 def pprint(x):
     try:
         display(pd.DataFrame(x))
     except:
         print(x)
-    
-def prep(X, mode='lower'):
-    """Common data preparation such as standardizing capitalization"""
-    modes = ['lower', 'capitalize', 'casefold', 'swapcase', 'title', 'upper', None, False]
-    assert mode in modes, f'mode must one of {modes} ... got {mode}'
-    if X is None or X is np.nan:
-        return None
-    elif isinstance(X, str):
-        if mode:
-            X = getattr(X, mode)()
-        return X.strip()
-    elif isinstance(X, (list, tuple, set, pd.Index)):
-        return type(X)((prep(x, mode) for x in X))
-    elif isinstance(X, dict):
-        return dict(zip(*prep(listify(X), mode)))
-    elif isinstance(X, np.ndarray):
-        return np.array(prep(listify(X), mode))
-    elif isinstance(X, pd.DataFrame):
-        idx = len(X.index.names)
-        X = X.reset_index()
-        X.columns = prep(X.columns, mode)
-        return X.apply(to_numeric).set_index(X.columns[:idx].tolist())
-#         return X.apply(to_numeric).convert_dtypes().set_index(X.columns[:idx].tolist())
-    elif isinstance(X, pd.Series):
-        return prep(X.to_frame(), mode).squeeze()
-    else:
-        return X
+
+def html(X, color='red_dark', odd_bg_color='dark grey', padding='2px', text_align='center', file=None, show=True, **kwargs):
+    df = pd.DataFrame(X)
+    table = pretty_html_table.build_table(df, color=color, odd_bg_color=odd_bg_color, padding=padding, text_align=text_align, **kwargs)
+    try:
+        with open(file, 'w') as f:
+            f.write(table)
+        print(f'HTML table written to {file}')
+    except:
+        pass
+    if show:
+        display(IPython.display.HTML(table))
+    return table
 
 def cartesian(dct):
     """Creates the Cartesian product of a dictionary with list-like values"""
