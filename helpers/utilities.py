@@ -29,14 +29,14 @@ pd.Series.prep = prep
 def html(self, color='red_dark', odd_bg_color='dark grey', padding='2px', text_align='center', file=None, show=True, **kwargs):
     df = pd.DataFrame(self)
     self.table = pretty_html_table.build_table(df, color=color, odd_bg_color=odd_bg_color, padding=padding, text_align=text_align, **kwargs)
+    if show:
+        display(IPython.display.HTML(self.table))
     try:
         with open(file, 'w') as f:
             f.write(self.table)
         print(f'HTML table written to {file}')
     except:
         pass
-    if show:
-        display(IPython.display.HTML(self.table))
     return self.table
 pd.DataFrame.html = html
 pd.Series.html = html
