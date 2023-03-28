@@ -52,7 +52,7 @@ def prep(X, cap='casefold'):
     elif isinstance(X, np.ndarray):
         return np.array(prep(listify(X), cap))
     elif isinstance(X, pd.DataFrame):
-        k = len(df.index.names)
+        k = len(X.index.names)
         X = X.reset_index()
         X.columns = [None if x == 'index' else prep(x, cap) for x in X.columns]
         return X.apply(to_numeric).set_index(X.columns[:k].tolist())
