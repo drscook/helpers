@@ -77,7 +77,7 @@ def html(X, color='red_dark', odd_bg_color='dark grey', padding='2px', text_alig
     except:
         pass
     if show:
-        display(IPython.display.HTML(table))
+        IPython.display.HTML(table)
     return table
 
 def cartesian(dct):
