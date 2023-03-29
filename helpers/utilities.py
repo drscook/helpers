@@ -67,7 +67,7 @@ def pprint(x):
     except:
         print(x)
 
-def html(X, color='red_dark', odd_bg_color='dark grey', padding='2px', text_align='center', file=None, show=True, **kwargs):
+def html(X, color='red_dark', odd_bg_color='dark grey', padding='2px', text_align='center', file=None, **kwargs):
     df = pd.DataFrame(X)
     table = pretty_html_table.build_table(df, color=color, odd_bg_color=odd_bg_color, padding=padding, text_align=text_align, **kwargs)
     try:
@@ -76,8 +76,6 @@ def html(X, color='red_dark', odd_bg_color='dark grey', padding='2px', text_alig
         print(f'HTML table written to {file}')
     except:
         pass
-    if show:
-        IPython.display.HTML(table)
     return table
 
 def cartesian(dct):
