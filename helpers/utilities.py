@@ -60,8 +60,6 @@ def prep(X, cap='casefold'):
         return prep(X.to_frame(), cap).squeeze()
     else:
         return X
-pd.DataFrame.prep = prep
-pd.Series.prep = prep
 
 def pprint(x):
     try:
