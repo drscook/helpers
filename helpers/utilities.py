@@ -25,7 +25,9 @@ def setify(X):
     return set(listify(X))
     
 def to_numeric(ser):
-    return pd.to_numeric(ser, errors='ignore').convert_dtypes()  # cast to numeric nullable datatypes where possible
+    ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric nullable datatypes where possible
+    return ser.astype('Int64') if pd.api.types.is_integer_dtype(ser) else ser
+
 #     dt = str(ser.dtype).lower()
 #     if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
 #         if 'object' in dt:
