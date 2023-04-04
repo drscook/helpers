@@ -25,15 +25,16 @@ def setify(X):
     return set(listify(X))
     
 def to_numeric(ser):
-    dt = str(ser.dtype).lower()
-    if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
-        if 'object' in dt:
-            ser = ser.astype('string')
-        for _ in range(3):
-            # turn strings to numeric if possible & convert to new nullable dtypes
-            # repeat because further downcasting might be possible after conversion due to integer type nulls
-            ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric datatypes where possible
-    return ser.convert_dtypes()
+    return pd.to_numeric(ser, errors='ignore').convert_dtypes()  # cast to numeric datatypes where possible
+#     dt = str(ser.dtype).lower()
+#     if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
+#         if 'object' in dt:
+#             ser = ser.astype('string')
+#         for _ in range(3):
+#             # turn strings to numeric if possible & convert to new nullable dtypes
+#             # repeat because further downcasting might be possible after conversion due to integer type nulls
+#             ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric datatypes where possible
+#     return ser.convert_dtypes()
 
 def prep(X, cap='casefold'):
     """Common data preparation such as standardizing capitalization"""
