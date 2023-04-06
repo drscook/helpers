@@ -61,7 +61,7 @@ def prep(X, cap='casefold'):
     elif isinstance(X, pd.DataFrame):
         k = len(X.index.names)
         X = X.reset_index()
-        X.columns = [None if x == 'index' else prep(x, cap) for x in X.columns]
+        X.columns = [prep(x, cap) if x != 'index' else '' for x in X.columns]
         return X.apply(to_numeric).set_index(X.columns[:k].tolist())
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), cap).squeeze()
