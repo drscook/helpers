@@ -4,6 +4,12 @@ from .common_imports import *
 ### Convennient Helper Functions ###
 ################################################################################
 
+class MyBaseClass():
+    def __getitem__(self, key):
+        return self.__dict__[key]
+    def __setitem__(self, key, val):
+        self.__dict__[key] = val
+
 def listify(X):
     """Turns almost anything into a list"""
     if X is None or X is np.nan:
