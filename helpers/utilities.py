@@ -11,6 +11,10 @@ class MyBaseClass():
         return self.__dict__[key]
     def __setitem__(self, key, val):
         self.__dict__[key] = val
+    def __delitem__(self, key):
+        self.__dict__.pop(key)
+    def pop(self, key):
+        self.__dict__.pop(key)
 
 def listify(X):
     """Turns almost anything into a list"""
