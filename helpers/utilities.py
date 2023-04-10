@@ -44,16 +44,6 @@ def to_numeric(ser):
         ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric nullable datatypes where possible
         return ser.astype('Int64') if pd.api.types.is_integer_dtype(ser) else ser
 
-#     dt = str(ser.dtype).lower()
-#     if not ('datetime' in dt or 'geometry' in dt or 'timestamp' in dt):
-#         if 'object' in dt:
-#             ser = ser.astype('string')
-#         for _ in range(3):
-#             # turn strings to numeric if possible & convert to new nullable dtypes
-#             # repeat because further downcasting might be possible after conversion due to integer type nulls
-#             ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric datatypes where possible
-#     return ser.convert_dtypes()
-
 def prep(X, cap='casefold'):
     """Common data preparation such as standardizing capitalization"""
     caps = ['casefold', 'lower', 'upper', 'capitalize', 'swapcase', 'title', None, False]
@@ -71,10 +61,13 @@ def prep(X, cap='casefold'):
     elif isinstance(X, np.ndarray):
         return np.array(prep(listify(X), cap))
     elif isinstance(X, pd.DataFrame):
-        k = len(X.index.names)
-        X = X.reset_index()
-        X.columns = [prep(x, cap) if x != 'index' else '' for x in X.columns]
-        return X.apply(to_numeric).set_index(X.columns[:k].tolist())
+        X.columns = [prep(x, cap) for x in X.columns]
+        X.index.names = [prep(x, cap) for x in X.index.names]
+        return X.apply(to_numeric)
+#         k = len(X.index.names)
+#         X = X.reset_index()
+#         X.columns = [prep(x, cap) if x != 'index' else '' for x in X.columns]
+#         return X.apply(to_numeric).set_index(X.columns[:k].tolist())
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), cap).squeeze()
     else:
