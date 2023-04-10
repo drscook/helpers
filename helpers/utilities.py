@@ -4,18 +4,6 @@ from .common_imports import *
 ### Convennient Helper Functions ###
 ################################################################################
 
-class MyBaseClass():
-    def __contains__(self, key):
-        return key in self.__dict__
-    def __getitem__(self, key):
-        return self.__dict__[key]
-    def __setitem__(self, key, val):
-        self.__dict__[key] = val
-    def __delitem__(self, key):
-        self.__dict__.pop(key)
-    def pop(self, key):
-        self.__dict__.pop(key)
-
 def listify(X):
     """Turns almost anything into a list"""
     if X is None or X is np.nan:
@@ -42,7 +30,7 @@ def to_numeric(ser):
         return ser.convert_dtypes()
     else:
         ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes()  # cast to numeric nullable datatypes where possible
-        return ser.astype('Int64') if pd.api.types.is_integer_dtype(ser) else ser
+        return ser.astype('Int64') if pd.api.types.is_integer_dtype(ser) else ser  # force Int64 instead of smaller Int32, Int16, etc
 
 def prep(X, cap='casefold'):
     """Common data preparation such as standardizing capitalization"""
@@ -64,10 +52,6 @@ def prep(X, cap='casefold'):
         X.columns = [prep(x, cap) for x in X.columns]
         X.index.names = [prep(x, cap) for x in X.index.names]
         return X.apply(to_numeric)
-#         k = len(X.index.names)
-#         X = X.reset_index()
-#         X.columns = [prep(x, cap) if x != 'index' else '' for x in X.columns]
-#         return X.apply(to_numeric).set_index(X.columns[:k].tolist())
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), cap).squeeze()
     else:
@@ -181,6 +165,17 @@ def mount_drive(path='/content/drive'):
     google.colab.drive.mount(str(path))
     return path / 'MyDrive'
 
+class MyBaseClass():
+    def __contains__(self, key):
+        return key in self.__dict__
+    def __getitem__(self, key):
+        return self.__dict__[key]
+    def __setitem__(self, key, val):
+        self.__dict__[key] = val
+    def __delitem__(self, key):
+        self.__dict__.pop(key)
+    def pop(self, key):
+        self.__dict__.pop(key)
 
 ################################################################################
 ### Interact With BigQuery ###
