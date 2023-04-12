@@ -51,9 +51,9 @@ def prep(X, cap='casefold'):
     elif isinstance(X, pd.DataFrame):
         cols = X.columns
         X = X.reset_index().apply(to_numeric)
-        f = lambda L: [prep(x, cap).str.replace(' ','_') for x in L]
-        X.columns = f(X.columns)
-        idx = X.columns.difference(f(cols))
+        g = lambda L: [prep(x, cap).str.replace(' ','_') for x in L]
+        X.columns = g(X.columns)
+        idx = list(X.columns.difference(g(cols)))
         return X.set_index(idx)
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), cap).squeeze()
