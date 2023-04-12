@@ -51,7 +51,7 @@ def prep(X, cap='casefold'):
     elif isinstance(X, pd.DataFrame):
         cols = X.columns
         X = X.reset_index().apply(to_numeric)
-        g = lambda L: [prep(x, cap).str.replace(' ','_') for x in L]
+        g = lambda L: [str(prep(x, cap)).replace(' ','_') for x in L]
         X.columns = g(X.columns)
         idx = list(X.columns.difference(g(cols)))
         return X.set_index(idx)
