@@ -50,9 +50,9 @@ def prep(X, cap='casefold'):
         return np.array(prep(listify(X), cap))
     elif isinstance(X, pd.DataFrame):
         L = [X, X[[]].reset_index()]
-        for Y in L:
-            Y = Y.apply(to_numeric)
-            Y.columns = [prep(c, cap).replace(' ','_') if isinstance(c, str) else c for c in Y.columns]
+        for i, df in enumerate(L):
+            L[i] = df.apply(to_numeric)
+            L[i].columns = [prep(c, cap).replace(' ','_') if isinstance(c, str) else c for c in df.columns]
         idx = L[1].set_index(list(L[1].columns)).index
         return L[0].set_index(idx)
     elif isinstance(X, pd.Series):
