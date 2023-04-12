@@ -49,12 +49,10 @@ def prep(X, cap='casefold'):
     elif isinstance(X, np.ndarray):
         return np.array(prep(listify(X), cap))
     elif isinstance(X, pd.DataFrame):
-        L = [X, X[[]].reset_index()]
-        for i, df in enumerate(L):
-            L[i] = df.apply(to_numeric)
-            L[i].columns = [prep(c, cap).replace(' ','_') if isinstance(c, str) else c for c in df.columns]
-        idx = L[1].set_index(list(L[1].columns)).index
-        return L[0].set_index(idx)
+        g = lambda df:df.apply(to_numeric).rename(columns={c:prep(c, cap).replace(' ','_') if isinstance(c, str) else c for c in df.columns})
+        idx = g(X[[]].reset_index())
+        idx = idx.set_index(list(idx.columns)).index
+        return g(X).set_index(idx)
     elif isinstance(X, pd.Series):
         return prep(X.to_frame(), cap).squeeze()
     else:
