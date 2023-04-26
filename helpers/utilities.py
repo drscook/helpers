@@ -169,6 +169,8 @@ def mount_drive(path='/content/drive'):
 class MyBaseClass():
     def __getitem__(self, key):
         return getattr(self, key)
+    def __delitem__(self, key):
+        delattr(self, keyl)
     def __setitem__(self, key, val):
         setattr(self, key, val)
     def __contains__(self, key):
