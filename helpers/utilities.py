@@ -167,16 +167,12 @@ def mount_drive(path='/content/drive'):
     return path / 'MyDrive'
 
 class MyBaseClass():
-    def __contains__(self, key):
-        return key in self.__dict__
     def __getitem__(self, key):
-        return self.__dict__[key]
+        return getattr(self, key)
     def __setitem__(self, key, val):
-        self.__dict__[key] = val
-    def __delitem__(self, key):
-        self.__dict__.pop(key)
-    def pop(self, key):
-        self.__dict__.pop(key)
+        setattr(self, key, val)
+    def __contains__(self, key):
+        return hasattr(self, key)
 
 ################################################################################
 ### Interact With BigQuery ###
