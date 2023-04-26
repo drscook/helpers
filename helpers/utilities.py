@@ -170,7 +170,7 @@ class MyBaseClass():
     def __getitem__(self, key):
         return getattr(self, key)
     def __delitem__(self, key):
-        delattr(self, keyl)
+        delattr(self, key)
     def __setitem__(self, key, val):
         setattr(self, key, val)
     def __contains__(self, key):
