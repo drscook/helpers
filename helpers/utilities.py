@@ -27,11 +27,9 @@ def setify(X):
 def to_numeric(ser, dtype_backend='pyarrow'):
     dt = str(ser.dtype).lower()
     if 'time' in dt or 'geometry' in dt:
-#         return ser.convert_dtypes(dtype_backend="pyarrow")
         return ser
     else:
         ser = pd.to_numeric(ser, errors='ignore', downcast='integer', dtype_backend=dtype_backend)  # cast to numeric nullable datatypes where possible
-#         ser = pd.to_numeric(ser, errors='ignore', downcast='integer').convert_dtypes(dtype_backend="pyarrow")  # cast to numeric nullable datatypes where possible
         return ser.astype('int64[pyarrow]' if dtype_backend=="pyarrow" else 'Int64') if pd.api.types.is_integer_dtype(ser) else ser  # force Int64 instead of smaller Int32, Int16, etc
 
 def prep(X, cap='casefold'):
