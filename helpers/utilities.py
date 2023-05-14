@@ -24,7 +24,7 @@ def listify(X):
 def setify(X):
     return set(listify(X))
 
-def to_numeric(ser, dtype_backend="pyarrow"):
+def to_numeric(ser, dtype_backend='numpy_nullable'):
     dt = str(ser.dtype).lower()
     if 'time' in dt or 'geometry' in dt:
 #         return ser.convert_dtypes(dtype_backend="pyarrow")
