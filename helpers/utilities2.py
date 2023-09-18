@@ -54,6 +54,9 @@ def to_numeric(ser):
         ser = ser.astype('int64[pyarrow]' if DTYPE_BACKEND=='pyarrow' else 'Int64')
     return ser
 
+def rename_column(x, cap=CAP):
+    return prep(x, cap).replace(' ','_').replace('-','_') if isinstance(x, str) else x
+
 def prep(X, cap=CAP):
     caps = ['casefold', 'lower', 'upper', 'capitalize', 'swapcase', 'title', None, False]
     assert cap in caps, f'Unknown capitalization {cap} ... must one of {caps}'
