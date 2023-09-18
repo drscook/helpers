@@ -1,6 +1,6 @@
 import copy, os, sys, pathlib, contextlib, shutil, warnings, time
-import datetime, joblib, json, IPython, dataclasses, typing, itertools as it
-import numpy as np, pandas as pd
+import datetime, joblib, json, IPython, dataclasses, typing
+import itertools as it, numpy as np, pandas as pd
 import matplotlib.pyplot as plt, bokeh as bk, seaborn as sns, plotly.express as px
 DTYPE_BACKEND = 'numpy_nullable'
 CAP = 'casefold'
