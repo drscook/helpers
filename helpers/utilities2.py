@@ -2,6 +2,8 @@ import copy, os, sys, pathlib, contextlib, shutil, warnings, time
 import datetime, joblib, json, IPython, dataclasses, typing
 import itertools as it, numpy as np, pandas as pd
 import matplotlib.pyplot as plt, bokeh as bk, seaborn as sns, plotly.express as px
+warnings.filterwarnings("ignore", message=".*Could not infer format, so each element will be parsed individually*.")
+
 DTYPE_BACKEND = 'numpy_nullable'
 CAP = 'casefold'
 
@@ -44,10 +46,12 @@ def join(x, sep=', '):
 def to_numeric(ser):
     dt = str(ser.dtype).lower()
     if 'geometry' not in dt and 'bool' not in dt:
-        try:
-            ser = pd.to_datetime(ser)
-        except DateParseError:
-            ser = pd.to_numeric(ser.astype('string').str.lower().str.strip(), errors='ignore', downcast='integer')
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=".*Could not infer format, so each element will be parsed individually*.")
+            try:
+                    ser = pd.to_datetime(ser)
+            except:
+                ser = pd.to_numeric(ser.astype('string').str.lower().str.strip(), errors='ignore', downcast='integer')
     ser = ser.convert_dtypes(dtype_backend=DTYPE_BACKEND)
     if pd.api.types.is_integer_dtype(ser):
         ser = ser.astype('int64[pyarrow]' if DTYPE_BACKEND=='pyarrow' else 'Int64')
