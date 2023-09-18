@@ -43,12 +43,11 @@ def join(x, sep=', '):
 
 def to_numeric(ser):
     dt = str(ser.dtype).lower()
-    if 'geometry' in dt or 'bool' in dt:
-        pass
-    elif 'time' in dt:
-        ser = pd.to_datetime(ser, errors='coerce')
-    else:    
-        ser = pd.to_numeric(ser.astype('string').str.lower().str.strip(), errors='ignore', downcast='integer')#, dtype_backend=DTYPE_BACKEND)
+    if 'geometry' not in dt and 'bool' not in dt:
+        try:
+            ser = pd.to_datetime(ser)
+        except DateParseError
+            ser = pd.to_numeric(ser.astype('string').str.lower().str.strip(), errors='ignore', downcast='integer')
     ser = ser.convert_dtypes(dtype_backend=DTYPE_BACKEND)
     if pd.api.types.is_integer_dtype(ser):
         ser = ser.astype('int64[pyarrow]' if DTYPE_BACKEND=='pyarrow' else 'Int64')
