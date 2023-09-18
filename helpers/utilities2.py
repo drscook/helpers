@@ -46,7 +46,7 @@ def to_numeric(ser):
     if 'geometry' not in dt and 'bool' not in dt:
         try:
             ser = pd.to_datetime(ser)
-        except DateParseError
+        except DateParseError:
             ser = pd.to_numeric(ser.astype('string').str.lower().str.strip(), errors='ignore', downcast='integer')
     ser = ser.convert_dtypes(dtype_backend=DTYPE_BACKEND)
     if pd.api.types.is_integer_dtype(ser):
